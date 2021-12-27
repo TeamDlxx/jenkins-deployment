@@ -12,6 +12,7 @@ const {
   delete_customer_by_id,
   get_customer_search,
   customer_search_count,
+  find_customer_by_user_id,
 } = require("../DAL/customer");
 const { add_to_session } = require("../DAL/session");
 const jwt = require("jsonwebtoken");
@@ -36,9 +37,13 @@ const _signupCustomer = async (body, resp) => {
     resp.error_message = "Something went wrong";
     return resp;
   }
+  let customer = {
+    _id: customer_user._id,
+    email: customer_user.email,
+  };
   // add customer
   const customer_obj = {
-    user_id: customer_user._id,
+    user_id: customer,
     first_name: body.first_name,
     last_name: body.last_name,
     profile_image: "",
@@ -77,7 +82,7 @@ const signupCustomer = async (body) => {
 
 const _editCustomer = async (body, id, resp) => {
   // find customer by id
-  const customer_detail = await find_customer_by_id(id);
+  const customer_detail = await find_customer_by_user_id(id);
   if (!customer_detail) {
     resp.error = true;
     resp.error_message = "Invalid customer id";
@@ -126,7 +131,7 @@ const _getCustomer = async (Limit, page, resp) => {
   const data = {
     customer: customer,
     total_pages: total_pages,
-    load_more_url: `/api/customer/get_customer?page=${page}&limit=15`,
+    load_more_url: `/api/customer/get_customers?page=${page}&limit=15`,
   };
   resp.data = data;
   return resp;
@@ -143,18 +148,36 @@ const getCustomer = async (limit, page) => {
   resp = await _getCustomer(limit, page, resp);
   return resp;
 };
-const _detailCustomer = async (customer_id, resp) => {
-  const customer = await find_customer_by_id(customer_id);
+const _detailCustomer = async (customer_id, user_id, resp) => {
+  const user = await find_user_by_id(user_id);
+  if (!user) {
+    resp.error = true;
+    resp.error_message = "Invalid User";
+    return resp;
+  }
+  if (user.type != 0 && user.type != 1) {
+    resp.error = true;
+    resp.error_message = "You are unauthorized!";
+    return resp;
+  }
+  if (user.type == 1) {
+    if (String(user._id) != String(customer_id)) {
+      resp.error = true;
+      resp.error_message = "You are unauthorized!";
+      return resp;
+    }
+  }
+  const customer = await find_customer_by_user_id(customer_id);
   if (!customer) {
     resp.error = true;
-    resp.error_message = "Invalid customer id";
+    resp.error_message = "Invalid Customer ID!";
     return resp;
   }
   resp.data = customer;
   return resp;
 };
 
-const detailCustomer = async (customer_id) => {
+const detailCustomer = async (customer_id, user_id) => {
   let resp = {
     error: false,
     auth: true,
@@ -162,20 +185,20 @@ const detailCustomer = async (customer_id) => {
     data: {},
   };
 
-  resp = await _detailCustomer(customer_id, resp);
+  resp = await _detailCustomer(customer_id, user_id, resp);
   return resp;
 };
 
 const _deleteCustomer = async (customer_id, resp) => {
   // find by id
-  const custmer = await find_customer_by_id(customer_id);
+  const custmer = await find_customer_by_user_id(customer_id);
   if (!custmer) {
     resp.error = true;
-    resp.error_message = "Customer not found";
+    resp.error_message = "Invalid Customer ID!";
     return resp;
   }
   // customer from user model
-  const deleted_user = await delete_user_by_id(custmer.user_id);
+  const deleted_user = await delete_user_by_id(custmer.user_id._id);
   // delete customer
   const deleted_customer = await delete_customer_by_id(customer_id);
   return resp;

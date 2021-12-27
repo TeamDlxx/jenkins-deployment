@@ -33,7 +33,7 @@ const email_verificatin = async (req, res) => {
 
     res.status(200).json({
       code: 200,
-      message: "Email verification",
+      message: "Email Verified!",
     });
   } catch (e) {
     RENDER_BAD_REQUEST(res, e);

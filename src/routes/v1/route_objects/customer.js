@@ -22,7 +22,7 @@ register_route({
 
 register_route({
   router,
-  route: "/get_customer",
+  route: "/get_customers",
   auth_enable: true,
   admin_auth_enable: true,
   get_method: get_customer,
@@ -32,7 +32,6 @@ register_route({
   router,
   route: "/detail_customer/:id",
   auth_enable: true,
-  admin_auth_enable: true,
   get_method: detail_customer,
 });
 

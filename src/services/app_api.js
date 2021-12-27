@@ -6,6 +6,7 @@ const {
   UPLOAD_S3_IMAGE,
   UPLOAD_AND_RESIZE_FILE,
   UPLOAD_AUDIO_FILE,
+  SEND_EMAIL,
 } = require("../utils/utils");
 const {
   add_to_session,
@@ -33,12 +34,12 @@ const _login_user = async (body, resp) => {
   const user = await find_user(body);
   if (!user) {
     resp.error = true;
-    resp.error_message = "Invalid Email or Password";
+    resp.error_message = "Invalid Email Address!";
     return resp;
   }
   if (user.type !== body.type) {
     resp.error = true;
-    resp.error_message = "Something went wrong";
+    resp.error_message = "Invalid Type!";
     return resp;
   }
 
@@ -214,7 +215,7 @@ const _validateEmailAddress = async (body, resp) => {
     }
     customer.verification_code = code;
     await customer.save();
-    await send_email(code, user.email);
+    await SEND_EMAIL(code, user.email);
     return resp;
   } else if (user.type == 2) {
     const franchise = await find_franchise_by_user_id(user._id);
@@ -225,7 +226,7 @@ const _validateEmailAddress = async (body, resp) => {
     }
     franchise.verification_code = code;
     await franchise.save();
-    await send_email(code, user.email);
+    await SEND_EMAIL(code, user.email);
     return resp;
   } else if (user.type == 0) {
     const admin = await find_admin_by_user_id(user._id);
@@ -236,7 +237,7 @@ const _validateEmailAddress = async (body, resp) => {
     }
     admin.verification_code = code;
     await admin.save();
-    await send_email(code, user.email);
+    await SEND_EMAIL(code, user.email);
     console.log(resp);
     return resp;
   }
@@ -270,10 +271,7 @@ const _codeValidation = async (body, resp) => {
       resp.error_message = "Something get wrong";
       return resp;
     }
-    if (
-      customer.verification_code == body.code &&
-      customer.verification_status == false
-    ) {
+    if (customer.verification_code == body.verification_code) {
       customer.verification_code = "";
       customer.verification_status = true;
       await customer.save();
@@ -290,10 +288,7 @@ const _codeValidation = async (body, resp) => {
       resp.error_message = "Something get wrong";
       return resp;
     }
-    if (
-      franchise.verification_code == body.verification_code &&
-      customer.verification_status == false
-    ) {
+    if (franchise.verification_code == body.verification_code) {
       franchise.verification_code == "";
       franchise.verification_status = true;
       await franchise.save();
@@ -310,10 +305,7 @@ const _codeValidation = async (body, resp) => {
       resp.error_message = "Something get wrong";
       return resp;
     }
-    if (
-      admin.verification_code == body.verification_code &&
-      customer.verification_status == false
-    ) {
+    if (admin.verification_code == body.verification_code) {
       admin.verification_code == "";
       admin.verification_status = true;
       await admin.save();
@@ -350,7 +342,7 @@ const _resetPassword = async (body, resp) => {
     const customer = await find_customer_by_user_id(user._id);
     if (!customer) {
       resp.error = true;
-      resp.error_message = "Something get wrong";
+      resp.error_message = "Invalid Customer ID!";
       return resp;
     }
     if (body.password !== body.confirm_password) {

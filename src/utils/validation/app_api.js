@@ -26,7 +26,7 @@ function validateEmail(body) {
 function validateCode(body) {
   const schema = {
     email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
-    code: Joi.string().required().min(6),
+    verification_code: Joi.string().required().min(6),
   };
   return Joi.validate(body, schema);
 }

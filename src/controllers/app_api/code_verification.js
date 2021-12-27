@@ -31,7 +31,7 @@ const code_verification = async (req, res) => {
 
     res.status(200).json({
       code: 200,
-      message: "Code verification",
+      message: "Code Verified!",
     });
   } catch (e) {
     RENDER_BAD_REQUEST(res, e);

@@ -4,7 +4,8 @@ const { RENDER_BAD_REQUEST } = require("../../utils/utils");
 const detail_customer = async (req, res) => {
   try {
     const { error, auth, error_message, data } = await detailCustomer(
-      req.params.id
+      req.params.id,
+      req.user
     );
 
     if (error) {

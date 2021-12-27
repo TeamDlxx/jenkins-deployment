@@ -30,7 +30,7 @@ const reset_password = async (req, res) => {
 
     res.status(200).json({
       code: 200,
-      message: "password reset ",
+      message: "Password Reset Successfully!",
     });
   } catch (e) {
     RENDER_BAD_REQUEST(res, e);

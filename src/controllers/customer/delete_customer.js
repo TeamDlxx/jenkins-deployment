@@ -23,7 +23,7 @@ const delete_customer = async (req, res) => {
 
     res.status(200).json({
       code: 200,
-      message: "customer deleted",
+      message: "Customer Deleted Successfully!",
     });
   } catch (e) {
     RENDER_BAD_REQUEST(res, e);

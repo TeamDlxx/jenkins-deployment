@@ -42,14 +42,14 @@ register_route({
 
 register_route({
   router,
-  route: "/email_verificatin",
+  route: "/email_verification",
   auth_enable: false,
   post_method: email_verification,
 });
 
 register_route({
   router,
-  route: "/code_verificatin",
+  route: "/code_verification",
   auth_enable: false,
   post_method: code_verification,
 });
@@ -63,21 +63,21 @@ register_route({
 
 register_route({
   router,
-  route: "/uplaod_image_s3",
+  route: "/upload_image_s3",
   auth_enable: true,
   post_method: uplaod_image_s3,
 });
 
 register_route({
   router,
-  route: "/uplaod_image",
+  route: "/upload_image",
   auth_enable: true,
   post_method: uplaod_image,
 });
 
 register_route({
   router,
-  route: "/uplaod_audio",
+  route: "/upload_audio",
   auth_enable: true,
   post_method: uplaod_audio,
 });

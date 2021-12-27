@@ -18,7 +18,6 @@ const _signup_admin = async (body, resp) => {
     return resp;
   }
   const admin = await signupAdmin(body, user._id);
-
   resp.data = {
     admin: admin,
   };
@@ -52,6 +51,7 @@ const _edit_admin = async (body, resp, user_id) => {
   admin.last_name = body.last_name;
   admin.contact_number = body.contact_number;
   admin.address = body.address;
+  admin.profile_image = body.profile_image;
   admin.status = body.status;
 
   let editAdmin = await admin.save();
@@ -83,14 +83,7 @@ const edit_admin = async (body, user_id) => {
 
 // Getting Admin Details
 const _detail_admin = async (user_id, resp) => {
-  // if(!user_id) {
-  //     resp.error = true;
-  //     resp.error_message = "ID required";
-  //     return resp;
-  // }
-
   const admin = await detailAdmin(user_id);
-
   if (!admin) {
     resp.error = true;
     resp.error_message = "Admin Not Found";

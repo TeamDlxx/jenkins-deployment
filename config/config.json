@@ -1,10 +1,10 @@
-{ 
+{
   "local": {
-    "PORT": 1200, 
-    "IP":"192.168.1.23",
+    "PORT": 1200,
+    "IP": "192.168.1.23",
     "MONGODB_URI": "mongodb://localhost:27017/backend-template",
-    "EMAIL_API_KEY":"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",
-    "EMAIL_FROM":"mohsinali08585@gmail.com",
+    "EMAIL_API_KEY": "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",
+    "EMAIL_FROM": "mohsinali08585@gmail.com",
     "JWT_SECRET": "3ZGErMDCyxTOZYFr56HGD",
     "NODE_ENV": "local"
   },
@@ -12,8 +12,8 @@
     "PORT": 1200,
     "IP": "192.168.1.28",
     "MONGODB_URI": "mongodb://localhost:27017/backend-template",
-    "EMAIL_API_KEY":"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",
-    "EMAIL_FROM":"mohsinali08585@gmail.com",
+    "EMAIL_API_KEY": "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",
+    "EMAIL_FROM": "mohsinali08585@gmail.com",
     "JWT_SECRET": "3ZGErMDCyxTOZYFr56HGD",
     "BASE_UPLOAD_DIR": "/home/centos/uploads/we-fix-app/",
     "NODE_ENV": "dev"
@@ -22,10 +22,10 @@
     "PORT": 1200,
     "IP": "192.168.1.28",
     "MONGODB_URI": "mongodb://localhost:27017/backend-template",
-    "EMAIL_API_KEY":"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",
-    "EMAIL_FROM":"mohsinali08585@gmail.com",
+    "EMAIL_API_KEY": "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",
+    "EMAIL_FROM": "mohsinali08585@gmail.com",
     "JWT_SECRET": "3ZGErMDCyxTOZYFr56HGD",
     "BASE_UPLOAD_DIR": "/home/centos/uploads/we-fix-app/",
     "NODE_ENV": "prod"
-  } 
+  }
 }

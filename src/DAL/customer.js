@@ -5,11 +5,10 @@ const Signup_customer = async (customer_data) => {
   return await new_customer.save();
 };
 const find_customer_by_id = async (id) => {
-  return await Customer.findOne({ _id: id });
+  return await Customer.findOne({ _id: id }).populate("user_id", "email");
 };
-
 const find_customer_by_user_id = async (id) => {
-  return await Customer.findOne({ user_id: id });
+  return await Customer.findOne({ user_id: id }).populate("user_id", "email");
 };
 
 const total_customer = async (id) => {
@@ -21,7 +20,11 @@ const latest_customer = async (id) => {
 };
 
 const pagination_customer = async (skip, limit) => {
-  return await Customer.find().sort({ createdAt: -1 }).limit(limit).skip(skip);
+  return await Customer.find()
+    .sort({ createdAt: -1 })
+    .populate("user_id", "email")
+    .limit(limit)
+    .skip(skip);
 };
 const all_customer_count = async () => {
   return await Customer.find().countDocuments();

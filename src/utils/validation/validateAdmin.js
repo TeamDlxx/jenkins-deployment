@@ -39,6 +39,7 @@ function validateEditAdmin(user) {
       .trim(),
     address: Joi.string().trim().allow(null, ""),
     contact_number: Joi.string().trim().allow(null, ""),
+    profile_image: Joi.string().trim().required(),
     status: Joi.boolean().required(),
   };
   return Joi.validate(user, schema);
