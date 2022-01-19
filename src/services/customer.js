@@ -80,9 +80,27 @@ const signupCustomer = async (body) => {
   return resp;
 };
 
-const _editCustomer = async (body, id, resp) => {
+const _editCustomer = async (body, customer_id, user_id,resp) => {
+   const user = await find_user_by_id(user_id);
+  if (!user) {
+    resp.error = true;
+    resp.error_message = "Invalid User";
+    return resp;
+  }
+  if (user.type != 0 && user.type != 1) {
+    resp.error = true;
+    resp.error_message = "You are unauthorized!";
+    return resp;
+  }
+  if (user.type == 1) {
+    if (String(user._id) != String(customer_id)) {
+      resp.error = true;
+      resp.error_message = "You are unauthorized!";
+      return resp;
+    }
+  }
   // find customer by id
-  const customer_detail = await find_customer_by_user_id(id);
+  const customer_detail = await find_customer_by_user_id(user_id);
   if (!customer_detail) {
     resp.error = true;
     resp.error_message = "Invalid customer id";
@@ -97,7 +115,7 @@ const _editCustomer = async (body, id, resp) => {
   resp.data = customer_detail;
   return resp;
 };
-const editCustomer = async (body, id) => {
+const editCustomer = async (body, customer_id, user_id) => {
   let resp = {
     error: false,
     auth: true,
@@ -105,9 +123,10 @@ const editCustomer = async (body, id) => {
     data: {},
   };
 
-  resp = await _editCustomer(body, id, resp);
+  resp = await _editCustomer(body, customer_id, user_id, resp);
   return resp;
 };
+
 
 const _getCustomer = async (Limit, page, resp) => {
   ///// pagination

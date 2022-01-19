@@ -17,7 +17,8 @@ const edit_customer = async (req, res) => {
 
     const { error, auth, error_message, data } = await editCustomer(
       req.body,
-      req.params.id
+      req.params.id,
+      req.user
     );
 
     if (error) {
