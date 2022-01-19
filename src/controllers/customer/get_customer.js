@@ -26,7 +26,7 @@ const get_customer = async (req, res) => {
       code: 200,
       message: "customer",
       customer: data.customer,
-      pages: data.total_pages,
+      count: data.total_pages,
       load_more_url: data.load_more_url,
     });
   } catch (e) {
