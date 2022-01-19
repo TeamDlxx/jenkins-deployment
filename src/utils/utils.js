@@ -17,11 +17,8 @@ const RENDER_BAD_REQUEST = (res, error) => {
   }
 };
 // change order in delete case
-const CHANGE_DEL_ORDER = async (_id, current_order, schema) => {
+const CHANGE_DEL_ORDER = async (current_order, schema) => {
   let doc = await schema.find({
-    _id: {
-      $ne: _id,
-    },
     order: {
       $gte: current_order,
     },
@@ -35,20 +32,17 @@ const CHANGE_DEL_ORDER = async (_id, current_order, schema) => {
 
 //ORDER_CHANGE_TO_LOWER
 const ORDER_CHANGE_TO_LOWER = async (
-  _id,
   current_order,
   past_order,
   schema
 ) => {
   let doc = await schema.find({
-    _id: {
-      $ne: _id,
-    },
     order: {
-      $gte: past_order,
-      $lte: current_order,
+      $gte: current_order,
+      $lte: past_order,
     },
   });
+  console.log(doc, "doc");
   const promise = doc.map(async (Obj) => {
     Obj.order = Obj.order + 1;
     await Obj.save();
@@ -58,18 +52,14 @@ const ORDER_CHANGE_TO_LOWER = async (
 
 //_ORDER_CHANGE_TO_UPPER
 const ORDER_CHANGE_TO_UPPER = async (
-  _id,
   current_order,
   past_order,
   schema
 ) => {
   let doc = await schema.find({
-    _id: {
-      $ne: _id,
-    },
     order: {
-      $gte: current_order,
-      $lte: past_order,
+      $gte: past_order,
+      $lte: current_order,
     },
   });
   console.log(doc, "this is doc");
@@ -162,25 +152,43 @@ const UPLOAD_S3_IMAGE = async (img_name, dir, image_data) => {
   let image_file_name = "";
   let savePath = dir;
   image_file_name = img_name;
-  upload.single("file");
-  const s3Client = s3.s3Client;
-  const params = s3.uploadParams;
-  params.Key = savePath + image_file_name;
-  params.Body = image_data;
-  params.ContentType = "image/jpeg";
-  try {
-    let a = await s3Client.upload(params).promise();
-    response.status = true;
-    response.image_file_name = image_file_name;
-  } catch (err) {
-    response.status = false;
-    response.error = err;
-    console.log("error", err);
-  }
+  
+   sharp(image_data)
+        .resize(300, 300)
+        .toBuffer(async (err, info) => {
+          if (err) {
+            console.log(err, "toBuffer error in uploader");
+          } else {
+            upload.single("file");
+             const s3Client = s3.s3Client;
+            const params = s3.uploadParams;
+            params.Key = savePath + image_file_name;
+            params.Body = info;
+             params.ContentType = "image/jpeg";
+            try {
+              let result = await s3Client.upload(params).promise();
+              response=image_file_name;
+            } catch (err) {
+              console.log("error in s3 uploading", err);
+            }
+          }
+        });
 
   return response;
 };
-
+const SEND_NOTIFICATION = async (message) => {
+	// Send a message to devices subscribed to the provided topic.
+	return admin
+		.messaging()
+		.send(message)
+		.then((response) => {
+			// Response is a message ID string.
+			console.log('Successfully sent message:', response);
+		})
+		.catch((error) => {
+			console.log('Error sending message:', error);
+		});
+};
 module.exports = {
   RENDER_BAD_REQUEST,
   CHANGE_DEL_ORDER,
@@ -190,4 +198,5 @@ module.exports = {
   UPLOAD_AND_RESIZE_FILE,
   UPLOAD_AUDIO_FILE,
   UPLOAD_S3_IMAGE,
+  SEND_NOTIFICATION
 };
