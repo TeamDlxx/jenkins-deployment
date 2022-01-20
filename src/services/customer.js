@@ -150,7 +150,7 @@ const _getCustomer = async (Limit, page, resp) => {
   const data = {
     customer: customer,
     total_pages: total_pages,
-    load_more_url: `/api/customer/get_customers?page=${page}&limit=15`,
+    load_more_url: `/customer/get_customers?page=${page}&limit=15`,
   };
   resp.data = data;
   return resp;
