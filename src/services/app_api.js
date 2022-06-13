@@ -1,4 +1,4 @@
-const { v1: uuidv1 } = require("uuid");
+const {v1: uuidv1} = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {
@@ -18,14 +18,14 @@ const {
   find_user_by_id,
   checking_email_exist,
 } = require("../DAL/user");
-const { detailAdmin } = require("../DAL/admin");
+const {detailAdmin} = require("../DAL/admin");
 const {
   find_customer_by_user_id,
   find_customer_by_id,
 } = require("../DAL/customer");
-const { find_admin_by_user_id } = require("../DAL/admin");
-const { v1: uuidv4 } = require("uuid");
-const { getAudioDurationInSeconds } = require("get-audio-duration");
+const {find_admin_by_user_id} = require("../DAL/admin");
+const {v1: uuidv4} = require("uuid");
+const {getAudioDurationInSeconds} = require("get-audio-duration");
 const axios = require("axios");
 const fs = require("fs");
 
@@ -55,7 +55,7 @@ const _login_user = async (body, resp) => {
   const access = "auth";
   const json_token = uuidv1();
   const token = jwt
-    .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
+    .sign({login_token: json_token, access}, process.env.JWT_SECRET)
     .toString();
 
   const add_session = await add_to_session(json_token, user._id);
@@ -194,6 +194,8 @@ const logout_user = async (user_id) => {
   resp = await _logout_user(user_id, resp);
   return resp;
 };
+
+/********************** Validate Email Address**********************/
 const _validateEmailAddress = async (body, resp) => {
   // find user by email
   const user = await checking_email_exist(body.email);
@@ -205,42 +207,10 @@ const _validateEmailAddress = async (body, resp) => {
   // generate code
   const code =
     Math.floor(Math.random() * (9 * Math.pow(10, 6 - 1))) + Math.pow(10, 6 - 1);
-  if (user.type == 1) {
-    // finc customer by user id
-    const customer = await find_customer_by_user_id(user._id);
-    if (!customer) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
-    customer.verification_code = code;
-    await customer.save();
-    await SEND_EMAIL(code, user.email);
-    return resp;
-  } else if (user.type == 2) {
-    const franchise = await find_franchise_by_user_id(user._id);
-    if (!franchise) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
-    franchise.verification_code = code;
-    await franchise.save();
-    await SEND_EMAIL(code, user.email);
-    return resp;
-  } else if (user.type == 0) {
-    const admin = await find_admin_by_user_id(user._id);
-    if (!admin) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
-    admin.verification_code = code;
-    await admin.save();
-    await SEND_EMAIL(code, user.email);
-    console.log(resp);
-    return resp;
-  }
+  user.verification_code = code;
+  await user.save();
+  await SEND_EMAIL(code, user.email);
+  return resp;
 };
 
 const validateEmailAddress = async (body) => {
@@ -255,6 +225,7 @@ const validateEmailAddress = async (body) => {
   return resp;
 };
 
+//*************** Validate Code*******************/
 const _codeValidation = async (body, resp) => {
   // find user by email
   const user = await checking_email_exist(body.email);
@@ -263,58 +234,16 @@ const _codeValidation = async (body, resp) => {
     resp.error_message = "Invalid Email Address";
     return resp;
   }
-  if (user.type == 1) {
-    // finc customer by user id
-    const customer = await find_customer_by_user_id(user._id);
-    if (!customer) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
-    if (customer.verification_code == body.verification_code) {
-      customer.verification_code = "";
-      customer.verification_status = true;
-      await customer.save();
-      return resp;
-    } else {
-      resp.error = true;
-      resp.error_message = "Invalid code or code is expire";
-      return resp;
-    }
-  } else if (user.type == 2) {
-    const franchise = await find_franchise_by_user_id(user._id);
-    if (!franchise) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
-    if (franchise.verification_code == body.verification_code) {
-      franchise.verification_code == "";
-      franchise.verification_status = true;
-      await franchise.save();
-      return resp;
-    } else {
-      resp.error = true;
-      resp.error_message = "Invalid code";
-      return resp;
-    }
-  } else if (user.type == 0) {
-    const admin = await find_admin_by_user_id(user._id);
-    if (!admin) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
-    if (admin.verification_code == body.verification_code) {
-      admin.verification_code == "";
-      admin.verification_status = true;
-      await admin.save();
-      return resp;
-    } else {
-      resp.error = true;
-      resp.error_message = "Invalid code";
-      return resp;
-    }
+
+  if (user.verification_code == body.verification_code) {
+    user.verification_code = "";
+    user.verification_status = true;
+    await user.save();
+    return resp;
+  } else {
+    resp.error = true;
+    resp.error_message = "Invalid code or code is expire";
+    return resp;
   }
 };
 
@@ -330,6 +259,7 @@ const codeValidation = async (body) => {
   return resp;
 };
 
+//****************Reset Password ********************/
 const _resetPassword = async (body, resp) => {
   // find user by email
   const user = await checking_email_exist(body.email);
@@ -338,77 +268,23 @@ const _resetPassword = async (body, resp) => {
     resp.error_message = "Invalid Email Address";
     return resp;
   }
-  if (user.type == 1) {
-    const customer = await find_customer_by_user_id(user._id);
-    if (!customer) {
-      resp.error = true;
-      resp.error_message = "Invalid Customer ID!";
-      return resp;
-    }
-    if (body.password !== body.confirm_password) {
-      resp.error = true;
-      resp.error_message = "Password and confirm password are not matched";
-      return resp;
-    }
-    if (customer.verification_status !== true) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(body.password, salt);
-    await user.save();
-    customer.verification_status = false;
-    await customer.save();
-    return resp;
-  } else if (user.type == 2) {
-    const franchise = await find_franchise_by_user_id(user._id);
-    if (!franchise) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
-    if (body.password !== body.confirm_password) {
-      resp.error = true;
-      resp.error_message = "Password and confirm password are not matched";
-      return resp;
-    }
-    if (franchise.verification_status !== true) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(body.password, salt);
-    await user.save();
-    franchise.verification_status = false;
-    await franchise.save();
-    return resp;
-  } else if (user.type == 0) {
-    const admin = await find_admin_by_user_id(user._id);
-    if (!admin) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
-    if (body.password !== body.confirm_password) {
-      resp.error = true;
-      resp.error_message = "Password and confirm password are not matched";
-      return resp;
-    }
-    if (admin.verification_status !== true) {
-      resp.error = true;
-      resp.error_message = "Something get wrong";
-      return resp;
-    }
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(body.password, salt);
-    await user.save();
-    admin.verification_status = false;
-    await admin.save();
+  if (body.password !== body.confirm_password) {
+    resp.error = true;
+    resp.error_message = "Password and confirm password are not matched";
     return resp;
   }
+  if (user.verification_status !== true) {
+    resp.error = true;
+    resp.error_message = "Something get wrong";
+    return resp;
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(body.password, salt);
+  user.verification_status = false;
+  await user.save();
+  return resp;
 };
 
 const resetPassword = async (body) => {
@@ -485,7 +361,7 @@ const _uplaodImage = async (files, resp) => {
   const upload_image_response = await UPLOAD_AND_RESIZE_FILE(
     files.image.data,
     dir,
-    { width: 200 }
+    {width: 200}
   );
   if (upload_image_response == false) {
     resp.error = true;
@@ -553,7 +429,7 @@ const _uplaodAudio = async (files, resp) => {
     // if no error, file has been deleted successfully
     console.log("File deleted!");
   });
-  resp.data = { path: response };
+  resp.data = {path: response};
   return resp;
 };
 

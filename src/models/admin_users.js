@@ -42,15 +42,6 @@ const adminUserSchema = new mongoose.Schema({
     required: true,
     default: false,
   },
-  verification_code: {
-    type: String,
-    trim: true,
-    default: "",
-  },
-  verification_status: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 adminUserSchema.plugin(timestamps);
@@ -67,8 +58,6 @@ adminUserSchema.methods.toJSON = function () {
     "profile_image",
     "contact_number",
     "status",
-    "verification_code",
-    "verification_status",
     "createdAt",
     "updatedAt",
   ]);

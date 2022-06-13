@@ -38,15 +38,6 @@ const customerSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-  verification_code: {
-    type: String,
-    trim: true,
-    default: "",
-  },
-  verification_status: {
-    type: Boolean,
-    default: false,
-  },
   status: {
     type: Boolean,
     required: true,
@@ -67,8 +58,6 @@ customerSchema.methods.toJSON = function () {
     "profile_image",
     "contact_number",
     "post_code",
-    "verification_code",
-    "verification_status",
     "status",
     "createdAt",
     "updatedAt",
