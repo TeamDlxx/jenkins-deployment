@@ -1,9 +1,9 @@
-const { searchCustomer } = require("../../services/customer");
-const { RENDER_BAD_REQUEST } = require("../../utils/utils");
+const {searchCustomer} = require("../../services/customer");
+const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
 const search_customer = async (req, res) => {
   try {
-    const { error, auth, error_message, data } = await searchCustomer(
+    const {error, error_message, data} = await searchCustomer(
       req.query.text,
       req.query.limit,
       req.query.page
@@ -16,16 +16,9 @@ const search_customer = async (req, res) => {
       });
     }
 
-    if (!auth) {
-      return res.status(403).json({
-        code: 403,
-        message: error_message,
-      });
-    }
-
     res.status(200).json({
       code: 200,
-      message: "customer",
+      message: "Customers",
       data: data,
     });
   } catch (e) {

@@ -1,7 +1,7 @@
 const {
   find_user,
   find_user_by_id,
-  signupUser,
+  signup_user,
   delete_user_by_id,
 } = require("../DAL/user");
 const {
@@ -14,12 +14,15 @@ const {
   customer_search_count,
   find_customer_by_user_id,
 } = require("../DAL/customer");
-const { add_to_session } = require("../DAL/session");
+const {
+  add_to_session,
+  delete_from_session_by_user_id,
+} = require("../DAL/session");
 const jwt = require("jsonwebtoken");
-const { UPLOAD_IMAGE } = require("../utils/utils");
-const { SERVICE_ICON_SIZE } = require("../utils/constants");
-const { v1: uuidv1 } = require("uuid");
-const { v1: uuidv4 } = require("uuid");
+const {UPLOAD_IMAGE} = require("../utils/utils");
+const {SERVICE_ICON_SIZE} = require("../utils/constants");
+const {v1: uuidv1} = require("uuid");
+const {v1: uuidv4} = require("uuid");
 
 const _signupCustomer = async (body, resp) => {
   const user = await find_user(body);
@@ -31,10 +34,10 @@ const _signupCustomer = async (body, resp) => {
   body.type = 1;
   body.status = true;
   // signup new user
-  let customer_user = await signupUser(body);
+  let customer_user = await signup_user(body);
   if (!customer_user) {
     resp.error = true;
-    resp.error_message = "Something went wrong";
+    resp.error_message = "Something Went Wrong";
     return resp;
   }
   let customer = {
@@ -56,7 +59,7 @@ const _signupCustomer = async (body, resp) => {
   const access = "auth";
   const json_token = uuidv1();
   const token = jwt
-    .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
+    .sign({login_token: json_token, access}, process.env.JWT_SECRET)
     .toString();
   const add_session = await add_to_session(json_token, customer_user._id);
   if (!add_session) {
@@ -71,7 +74,6 @@ const _signupCustomer = async (body, resp) => {
 const signupCustomer = async (body) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
@@ -80,8 +82,8 @@ const signupCustomer = async (body) => {
   return resp;
 };
 
-const _editCustomer = async (body, customer_id, user_id,resp) => {
-   const user = await find_user_by_id(user_id);
+const _editCustomer = async (body, user_id, resp) => {
+  const user = await find_user_by_id(user_id);
   if (!user) {
     resp.error = true;
     resp.error_message = "Invalid User";
@@ -92,18 +94,18 @@ const _editCustomer = async (body, customer_id, user_id,resp) => {
     resp.error_message = "You are unauthorized!";
     return resp;
   }
-  if (user.type == 1) {
-    if (String(user._id) != String(customer_id)) {
-      resp.error = true;
-      resp.error_message = "You are unauthorized!";
-      return resp;
-    }
+  if (user.type !== 1) {
+    // if (String(user._id) != String(customer_id)) {
+    resp.error = true;
+    resp.error_message = "You are unauthorized!";
+    return resp;
+    // }
   }
   // find customer by id
   const customer_detail = await find_customer_by_user_id(user_id);
   if (!customer_detail) {
     resp.error = true;
-    resp.error_message = "Invalid customer id";
+    resp.error_message = "Invalid Customer";
     return resp;
   }
   customer_detail.first_name = body.first_name;
@@ -115,20 +117,18 @@ const _editCustomer = async (body, customer_id, user_id,resp) => {
   resp.data = customer_detail;
   return resp;
 };
-const editCustomer = async (body, customer_id, user_id) => {
+const editCustomer = async (body, user_id) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
 
-  resp = await _editCustomer(body, customer_id, user_id, resp);
+  resp = await _editCustomer(body, user_id, resp);
   return resp;
 };
 
-
-const _getCustomer = async (Limit, page, resp) => {
+const _getCustomers = async (Limit, page, resp) => {
   ///// pagination
   let limit = parseInt(Limit);
   if (!limit) {
@@ -156,7 +156,7 @@ const _getCustomer = async (Limit, page, resp) => {
   return resp;
 };
 
-const getCustomer = async (limit, page) => {
+const getCustomers = async (limit, page) => {
   let resp = {
     error: false,
     auth: true,
@@ -164,10 +164,10 @@ const getCustomer = async (limit, page) => {
     data: {},
   };
 
-  resp = await _getCustomer(limit, page, resp);
+  resp = await _getCustomers(limit, page, resp);
   return resp;
 };
-const _detailCustomer = async (customer_id, user_id, resp) => {
+const _detailCustomer = async (user_id, resp) => {
   const user = await find_user_by_id(user_id);
   if (!user) {
     resp.error = true;
@@ -179,14 +179,14 @@ const _detailCustomer = async (customer_id, user_id, resp) => {
     resp.error_message = "You are unauthorized!";
     return resp;
   }
-  if (user.type == 1) {
-    if (String(user._id) != String(customer_id)) {
-      resp.error = true;
-      resp.error_message = "You are unauthorized!";
-      return resp;
-    }
+  if (user.type !== 1) {
+    // if (String(user._id) != String(customer_id)) {
+    resp.error = true;
+    resp.error_message = "You are unauthorized!";
+    return resp;
+    // }
   }
-  const customer = await find_customer_by_user_id(customer_id);
+  const customer = await find_customer_by_user_id(user_id);
   if (!customer) {
     resp.error = true;
     resp.error_message = "Invalid Customer ID!";
@@ -196,21 +196,20 @@ const _detailCustomer = async (customer_id, user_id, resp) => {
   return resp;
 };
 
-const detailCustomer = async (customer_id, user_id) => {
+const detailCustomer = async (user_id) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
 
-  resp = await _detailCustomer(customer_id, user_id, resp);
+  resp = await _detailCustomer(user_id, resp);
   return resp;
 };
 
-const _deleteCustomer = async (customer_id, resp) => {
+const _deleteCustomer = async (user_id, resp) => {
   // find by id
-  const custmer = await find_customer_by_user_id(customer_id);
+  const custmer = await find_customer_by_user_id(user_id);
   if (!custmer) {
     resp.error = true;
     resp.error_message = "Invalid Customer ID!";
@@ -219,19 +218,20 @@ const _deleteCustomer = async (customer_id, resp) => {
   // customer from user model
   const deleted_user = await delete_user_by_id(custmer.user_id._id);
   // delete customer
-  const deleted_customer = await delete_customer_by_id(customer_id);
+  const deleted_customer = await delete_customer_by_id(user_id);
+  // delete customer from session
+  const delete_customer_session = await delete_from_session_by_user_id(user_id);
   return resp;
 };
 
-const deleteCustomer = async (customer_id) => {
+const deleteCustomer = async (user_id) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
 
-  resp = await _deleteCustomer(customer_id, resp);
+  resp = await _deleteCustomer(user_id, resp);
   return resp;
 };
 
@@ -263,7 +263,6 @@ const _searchCustomer = async (text, Limit, page, resp) => {
 const searchCustomer = async (text, limit, page) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
@@ -274,7 +273,7 @@ const searchCustomer = async (text, limit, page) => {
 module.exports = {
   signupCustomer,
   editCustomer,
-  getCustomer,
+  getCustomers,
   detailCustomer,
   deleteCustomer,
   searchCustomer,

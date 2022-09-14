@@ -1,20 +1,13 @@
-const { uplaodImageS3 } = require("../../services/app_api");
-const { RENDER_BAD_REQUEST } = require("../../utils/utils");
+const {uplaodImageS3} = require("../../services/app_api");
+const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
 const uplaod_image_s3 = async (req, res) => {
   try {
-    const { error, auth, error_message, data } = await uplaodImageS3(req.files);
+    const {error, error_message, data} = await uplaodImageS3(req.files);
 
     if (error) {
       return res.status(400).json({
         code: 400,
-        message: error_message,
-      });
-    }
-
-    if (!auth) {
-      return res.status(403).json({
-        code: 403,
         message: error_message,
       });
     }

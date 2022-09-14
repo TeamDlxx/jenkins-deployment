@@ -1,9 +1,9 @@
-const { getCustomer } = require("../../services/customer");
-const { RENDER_BAD_REQUEST } = require("../../utils/utils");
+const {getCustomers} = require("../../services/customer");
+const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
-const get_customer = async (req, res) => {
+const get_customers = async (req, res) => {
   try {
-    const { error, auth, error_message, data } = await getCustomer(
+    const {error, error_message, data} = await getCustomers(
       req.query.limit,
       req.query.page
     );
@@ -15,16 +15,9 @@ const get_customer = async (req, res) => {
       });
     }
 
-    if (!auth) {
-      return res.status(403).json({
-        code: 403,
-        message: error_message,
-      });
-    }
-
     res.status(200).json({
       code: 200,
-      message: "customer",
+      message: "Customers",
       customer: data.customer,
       count: data.total_pages,
       load_more_url: data.load_more_url,
@@ -34,4 +27,4 @@ const get_customer = async (req, res) => {
   }
 };
 
-module.exports = get_customer;
+module.exports = get_customers;

@@ -1,8 +1,8 @@
-const { validateUser } = require("../../utils/validation/app_api");
-const { login_user } = require("../../services/app_api");
-const { RENDER_BAD_REQUEST } = require("../../utils/utils");
+const {validateUser} = require("../../utils/validation/app_api");
+const {loginUser} = require("../../services/app_api");
+const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
-const signup = async (req, res) => {
+const login = async (req, res) => {
   try {
     //validate Request Body
     try {
@@ -10,21 +10,14 @@ const signup = async (req, res) => {
     } catch (e) {
       return res
         .status(400)
-        .json({ code: 400, message: e.details[0].message.replace(/\"/g, "") });
+        .json({code: 400, message: e.details[0].message.replace(/\"/g, "")});
     }
 
-    const { error, auth, error_message, data } = await login_user(req.body);
+    const {error, error_message, data} = await loginUser(req.body);
 
     if (error) {
       return res.status(400).json({
         code: 400,
-        message: error_message,
-      });
-    }
-
-    if (!auth) {
-      return res.status(403).json({
-        code: 403,
         message: error_message,
       });
     }
@@ -40,4 +33,4 @@ const signup = async (req, res) => {
   }
 };
 
-module.exports = signup;
+module.exports = login;

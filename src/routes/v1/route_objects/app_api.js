@@ -1,6 +1,5 @@
 const router = require("express").Router();
-const { register_route } = require("../../../utils/reg_routes");
-// const upload_s3_file  = require('../../../controllers/app_api/upload_s3_file');
+const {register_route} = require("../../../utils/reg_routes");
 const login = require("../../../controllers/app_api/login");
 const change_password = require("../../../controllers/app_api/change_password");
 const change_email = require("../../../controllers/app_api/change_email");

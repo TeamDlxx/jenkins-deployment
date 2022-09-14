@@ -1,23 +1,23 @@
-const { signupAdmin, detailAdmin } = require("../DAL/admin");
-const { signupUser, checking_email_exist } = require("../DAL/user");
+const {signup_admin, detail_admin} = require("../DAL/admin");
+const {signup_user, checking_email_exist} = require("../DAL/user");
 
 // signup admin
-const _signup_admin = async (body, resp) => {
-  const checkingemailexist = await checking_email_exist(body.email);
-  if (checkingemailexist) {
+const _signupAdmin = async (body, resp) => {
+  const checking_email = await checking_email_exist(body.email);
+  if (checking_email) {
     resp.error = true;
-    resp.error_message = "Email already exist";
+    resp.error_message = "Email Already Exist";
     return resp;
   }
 
   // signup new user
-  let user = await signupUser(body);
+  let user = await signup_user(body);
   if (!user) {
     resp.error = true;
-    resp.error_message = "Admin sign up failed";
+    resp.error_message = "Admin Sign up Failed";
     return resp;
   }
-  const admin = await signupAdmin(body, user._id);
+  const admin = await signup_admin(body, user._id);
   resp.data = {
     admin: admin,
   };
@@ -25,21 +25,20 @@ const _signup_admin = async (body, resp) => {
   return resp;
 };
 
-const signup_admin = async (body) => {
+const signupAdmin = async (body) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
 
-  resp = await _signup_admin(body, resp);
+  resp = await _signupAdmin(body, resp);
   return resp;
 };
 
 // Edit Admin Details
-const _edit_admin = async (body, resp, user_id) => {
-  const admin = await detailAdmin(user_id);
+const _editAdmin = async (body, resp, user_id) => {
+  const admin = await detail_admin(user_id);
 
   if (!admin) {
     resp.error = true;
@@ -58,7 +57,7 @@ const _edit_admin = async (body, resp, user_id) => {
 
   if (!editAdmin) {
     resp.error = true;
-    resp.error_message = "Admin Update failed";
+    resp.error_message = "Admin Update Failed";
     return resp;
   }
 
@@ -69,21 +68,20 @@ const _edit_admin = async (body, resp, user_id) => {
   return resp;
 };
 
-const edit_admin = async (body, user_id) => {
+const editAdmin = async (body, user_id) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
 
-  resp = await _edit_admin(body, resp, user_id);
+  resp = await _editAdmin(body, resp, user_id);
   return resp;
 };
 
 // Getting Admin Details
-const _detail_admin = async (user_id, resp) => {
-  const admin = await detailAdmin(user_id);
+const _detailAdmin = async (user_id, resp) => {
+  const admin = await detail_admin(user_id);
   if (!admin) {
     resp.error = true;
     resp.error_message = "Admin Not Found";
@@ -97,20 +95,19 @@ const _detail_admin = async (user_id, resp) => {
   return resp;
 };
 
-const detail_admin = async (user_id) => {
+const detailAdmin = async (user_id) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
 
-  resp = await _detail_admin(user_id, resp);
+  resp = await _detailAdmin(user_id, resp);
   return resp;
 };
 
 module.exports = {
-  signup_admin,
-  edit_admin,
-  detail_admin,
+  signupAdmin,
+  editAdmin,
+  detailAdmin,
 };

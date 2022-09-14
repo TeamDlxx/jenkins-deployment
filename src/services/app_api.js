@@ -18,7 +18,7 @@ const {
   find_user_by_id,
   checking_email_exist,
 } = require("../DAL/user");
-const {detailAdmin} = require("../DAL/admin");
+const {detail_admin} = require("../DAL/admin");
 const {
   find_customer_by_user_id,
   find_customer_by_id,
@@ -29,7 +29,7 @@ const {getAudioDurationInSeconds} = require("get-audio-duration");
 const axios = require("axios");
 const fs = require("fs");
 
-const _login_user = async (body, resp) => {
+const _loginUser = async (body, resp) => {
   //
   const user = await find_user(body);
   if (!user) {
@@ -67,7 +67,7 @@ const _login_user = async (body, resp) => {
   }
   let detail;
   if (user.type == 0) {
-    detail = await detailAdmin(user._id);
+    detail = await detail_admin(user._id);
   } else {
     detail = await find_customer_by_user_id(user._id);
   }
@@ -80,19 +80,18 @@ const _login_user = async (body, resp) => {
   return resp;
 };
 
-const login_user = async (body) => {
+const loginUser = async (body) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
 
-  resp = await _login_user(body, resp);
+  resp = await _loginUser(body, resp);
   return resp;
 };
 
-const _change_password = async (body, user_id, resp) => {
+const _changePassword = async (body, user_id, resp) => {
   if (body.new_password !== body.confirm_password) {
     resp.error = true;
     resp.error_message = "Password And Confirm Password Not Matched";
@@ -121,19 +120,18 @@ const _change_password = async (body, user_id, resp) => {
   return resp;
 };
 
-const change_password = async (body, user_id) => {
+const changePassword = async (body, user_id) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
 
-  resp = await _change_password(body, user_id, resp);
+  resp = await _changePassword(body, user_id, resp);
   return resp;
 };
 
-const _change_email = async (body, user_id, resp) => {
+const _changeEmail = async (body, user_id, resp) => {
   let user = await find_user_by_id(user_id);
   if (!user) {
     resp.error = true;
@@ -145,7 +143,7 @@ const _change_email = async (body, user_id, resp) => {
     let check_user_email = await find_user(body);
     if (check_user_email) {
       resp.error = true;
-      resp.error_message = "User With this email already Exist";
+      resp.error_message = "User With This Email Already Exist";
       return resp;
     }
   }
@@ -155,19 +153,18 @@ const _change_email = async (body, user_id, resp) => {
   return resp;
 };
 
-const change_email = async (body, user_id) => {
+const changeEmail = async (body, user_id) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
 
-  resp = await _change_email(body, user_id, resp);
+  resp = await _changeEmail(body, user_id, resp);
   return resp;
 };
 
-const _logout_user = async (user_id, resp) => {
+const _logoutUser = async (user_id, resp) => {
   const session = await get_session_by_user_id(user_id);
   if (!session) {
     resp.error = true;
@@ -183,15 +180,14 @@ const _logout_user = async (user_id, resp) => {
   return resp;
 };
 
-const logout_user = async (user_id) => {
+const logoutUser = async (user_id) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
 
-  resp = await _logout_user(user_id, resp);
+  resp = await _logoutUser(user_id, resp);
   return resp;
 };
 
@@ -216,7 +212,6 @@ const _validateEmailAddress = async (body, resp) => {
 const validateEmailAddress = async (body) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
@@ -250,7 +245,6 @@ const _codeValidation = async (body, resp) => {
 const codeValidation = async (body) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
@@ -290,7 +284,6 @@ const _resetPassword = async (body, resp) => {
 const resetPassword = async (body) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
@@ -334,7 +327,6 @@ const _uplaodImageS3 = async (files, resp) => {
 const uplaodImageS3 = async (files) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
@@ -378,7 +370,6 @@ const _uplaodImage = async (files, resp) => {
 const uplaodImage = async (files) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
@@ -436,7 +427,6 @@ const _uplaodAudio = async (files, resp) => {
 const uplaodAudio = async (files) => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
@@ -446,13 +436,13 @@ const uplaodAudio = async (files) => {
 };
 
 module.exports = {
-  login_user,
-  change_password,
-  logout_user,
+  loginUser,
+  changePassword,
+  logoutUser,
   validateEmailAddress,
   codeValidation,
   resetPassword,
-  change_email,
+  changeEmail,
   uplaodImageS3,
   uplaodImage,
   uplaodAudio,

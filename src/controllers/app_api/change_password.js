@@ -1,8 +1,8 @@
-const { validatePassword } = require("../../utils/validation/app_api");
-const { change_password } = require("../../services/app_api");
-const { RENDER_BAD_REQUEST } = require("../../utils/utils");
+const {validatePassword} = require("../../utils/validation/app_api");
+const {changePassword} = require("../../services/app_api");
+const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
-const changePassword = async (req, res) => {
+const change_password = async (req, res) => {
   try {
     //validate Request Body
     try {
@@ -10,24 +10,14 @@ const changePassword = async (req, res) => {
     } catch (e) {
       return res
         .status(400)
-        .json({ code: 400, message: e.details[0].message.replace(/\"/g, "") });
+        .json({code: 400, message: e.details[0].message.replace(/\"/g, "")});
     }
 
-    const { error, auth, error_message } = await change_password(
-      req.body,
-      req.user
-    );
+    const {error, error_message} = await changePassword(req.body, req.user);
 
     if (error) {
       return res.status(400).json({
         code: 400,
-        message: error_message,
-      });
-    }
-
-    if (!auth) {
-      return res.status(403).json({
-        code: 403,
         message: error_message,
       });
     }
@@ -41,4 +31,4 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = changePassword;
+module.exports = change_password;

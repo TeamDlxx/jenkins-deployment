@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const { register_route } = require("../../../utils/reg_routes");
+const {register_route} = require("../../../utils/reg_routes");
 const signup_customer = require("../../../controllers/customer/signup_customer");
 const edit_customer = require("../../../controllers/customer/edit_customer");
-const get_customer = require("../../../controllers/customer/get_customer");
+const get_customers = require("../../../controllers/customer/get_customer");
 const detail_customer = require("../../../controllers/customer/detail_customer");
 const delete_customer = require("../../../controllers/customer/delete_customer");
 const search_customer = require("../../../controllers/customer/search_customer");
@@ -15,7 +15,7 @@ register_route({
 
 register_route({
   router,
-  route: "/edit_customer/:id",
+  route: "/edit_customer",
   auth_enable: true,
   put_method: edit_customer,
 });
@@ -25,12 +25,12 @@ register_route({
   route: "/get_customers",
   auth_enable: true,
   admin_auth_enable: true,
-  get_method: get_customer,
+  get_method: get_customers,
 });
 
 register_route({
   router,
-  route: "/detail_customer/:id",
+  route: "/detail_customer",
   auth_enable: true,
   get_method: detail_customer,
 });

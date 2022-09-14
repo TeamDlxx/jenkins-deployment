@@ -1,8 +1,6 @@
-const {
-  validateEditCustomerSignup,
-} = require("../../utils/validation/customer");
-const { editCustomer } = require("../../services/customer");
-const { RENDER_BAD_REQUEST } = require("../../utils/utils");
+const {validateEditCustomerSignup} = require("../../utils/validation/customer");
+const {editCustomer} = require("../../services/customer");
+const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
 const edit_customer = async (req, res) => {
   try {
@@ -12,25 +10,14 @@ const edit_customer = async (req, res) => {
     } catch (e) {
       return res
         .status(400)
-        .json({ code: 400, message: e.details[0].message.replace(/\"/g, "") });
+        .json({code: 400, message: e.details[0].message.replace(/\"/g, "")});
     }
 
-    const { error, auth, error_message, data } = await editCustomer(
-      req.body,
-      req.params.id,
-      req.user
-    );
+    const {error, error_message, data} = await editCustomer(req.body, req.user);
 
     if (error) {
       return res.status(400).json({
         code: 400,
-        message: error_message,
-      });
-    }
-
-    if (!auth) {
-      return res.status(403).json({
-        code: 403,
         message: error_message,
       });
     }

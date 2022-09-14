@@ -10,7 +10,7 @@ const fileUpload = require("express-fileupload");
 const cron = require("node-cron");
 const index = require("./src/routes");
 const app = express();
-const { do_backup } = require("./src/utils/backup");
+const {do_backup} = require("./src/utils/backup");
 
 app.use("/", index);
 
@@ -24,9 +24,9 @@ app.set("views", path.join(__dirname, "src", "views"));
 app.set("view engine", "ejs");
 
 app.use(logger("dev"));
-app.use(bodyParser.json({ limit: "2mb" }));
+app.use(bodyParser.json({limit: "2mb"}));
 app.use(
-  bodyParser.urlencoded({ extended: false, limit: "2mb", parameterLimit: 1000 })
+  bodyParser.urlencoded({extended: false, limit: "2mb", parameterLimit: 1000})
 );
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
@@ -37,7 +37,7 @@ app.use(fileUpload());
 // will do 2 types of version
 // 1- Major versions e.g: 1, 2, 3 .... (URL Path Versioning)
 // 2- Minor versions e.g: 1.1, 1.2 .... (URL Param Versioning: when only few endpoints need a change in an api-set)
-const { v1_routes } = require("./src/routes/v1/index");
+const {v1_routes} = require("./src/routes/v1/index");
 v1_routes(app);
 
 // catch 404 and forward to error handler

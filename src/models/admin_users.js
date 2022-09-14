@@ -1,27 +1,19 @@
 const mongoose = require("mongoose");
 const timestamps = require("mongoose-timestamp");
 const _ = require("lodash");
-const Joi = require("joi");
 
 const adminUserSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
     trim: true,
   },
   first_name: {
     type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 20,
     trim: true,
   },
   last_name: {
     type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 20,
     trim: true,
   },
   address: {
@@ -39,7 +31,6 @@ const adminUserSchema = new mongoose.Schema({
   },
   status: {
     type: Boolean,
-    required: true,
     default: false,
   },
 });

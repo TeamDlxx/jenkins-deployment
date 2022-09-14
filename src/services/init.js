@@ -1,20 +1,19 @@
-const { all_customer_count } = require("../DAL/customer");
-const _dashboard_stat = async (resp) => {
+const {all_customer_count} = require("../DAL/customer");
+const _initStat = async (resp) => {
   const customers = await all_customer_count();
-  resp.data = { customers: customers };
+  resp.data = {customers: customers};
   return resp;
 };
-const dashboard_stat = async () => {
+const initStat = async () => {
   let resp = {
     error: false,
-    auth: true,
     error_message: "",
     data: {},
   };
-  resp = await _dashboard_stat(resp);
+  resp = await _initStat(resp);
   return resp;
 };
 
 module.exports = {
-  dashboard_stat,
+  initStat,
 };

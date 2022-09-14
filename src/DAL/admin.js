@@ -1,7 +1,7 @@
-const { AdminUser } = require("../../src/models/admin_users");
+const {AdminUser} = require("../../src/models/admin_users");
 
 //creating admin
-const signupAdmin = async (body, user_id) => {
+const signup_admin = async (body, user_id) => {
   let admin_user = new AdminUser({
     user_id: user_id,
     first_name: body.first_name,
@@ -17,20 +17,20 @@ const signupAdmin = async (body, user_id) => {
 };
 
 // Getting Admin Details
-const detailAdmin = async (user_id) => {
-  const admin = AdminUser.findOne({ user_id: user_id }).populate(
+const detail_admin = async (user_id) => {
+  const admin = AdminUser.findOne({user_id: user_id}).populate(
     "user_id",
     "email"
   );
   return admin;
 };
 const find_admin_by_user_id = async (user_id) => {
-  const admin = AdminUser.findOne({ user_id: user_id });
+  const admin = AdminUser.findOne({user_id: user_id});
   return admin;
 };
 
 module.exports = {
-  signupAdmin,
-  detailAdmin,
+  signup_admin,
+  detail_admin,
   find_admin_by_user_id,
 };
