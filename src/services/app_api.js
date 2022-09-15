@@ -2,11 +2,10 @@ const {v1: uuidv1} = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {
-  send_email,
   UPLOAD_S3_IMAGE,
   UPLOAD_AND_RESIZE_FILE,
   UPLOAD_AUDIO_FILE,
-  SEND_EMAIL,
+  NOTIFY_BY_EMAIL_FROM_SES,
 } = require("../utils/utils");
 const {
   add_to_session,
@@ -205,7 +204,9 @@ const _validateEmailAddress = async (body, resp) => {
     Math.floor(Math.random() * (9 * Math.pow(10, 6 - 1))) + Math.pow(10, 6 - 1);
   user.verification_code = code;
   await user.save();
-  await SEND_EMAIL(code, user.email);
+  let subject = `Email Verification Code`;
+  let email_body = `Hi, Your Email verification code is ${code}`;
+  await NOTIFY_BY_EMAIL_FROM_SES(user.email, subject, email_body);
   return resp;
 };
 

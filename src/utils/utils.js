@@ -1,10 +1,11 @@
 const sharp = require("sharp");
 const s3 = require("../../config/S3_config/s3.config");
 let upload = require("../../config/S3_config/multer.config");
-const { TYPE_IMAGE, TYPE_AUDIO } = require("../utils/constants");
-const { v1: uuidv4 } = require("uuid");
+const {TYPE_IMAGE, TYPE_AUDIO} = require("../utils/constants");
+const {v1: uuidv4} = require("uuid");
 const fs = require("fs-extra");
 const path = require("path");
+const AWS = require("aws-sdk");
 
 const RENDER_BAD_REQUEST = (res, error) => {
   console.log(error);
@@ -31,11 +32,7 @@ const CHANGE_DEL_ORDER = async (current_order, schema) => {
 };
 
 //ORDER_CHANGE_TO_LOWER
-const ORDER_CHANGE_TO_LOWER = async (
-  current_order,
-  past_order,
-  schema
-) => {
+const ORDER_CHANGE_TO_LOWER = async (current_order, past_order, schema) => {
   let doc = await schema.find({
     order: {
       $gte: current_order,
@@ -51,11 +48,7 @@ const ORDER_CHANGE_TO_LOWER = async (
 };
 
 //_ORDER_CHANGE_TO_UPPER
-const ORDER_CHANGE_TO_UPPER = async (
-  current_order,
-  past_order,
-  schema
-) => {
+const ORDER_CHANGE_TO_UPPER = async (current_order, past_order, schema) => {
   let doc = await schema.find({
     order: {
       $gte: past_order,
@@ -152,42 +145,79 @@ const UPLOAD_S3_IMAGE = async (img_name, dir, image_data) => {
   let image_file_name = "";
   let savePath = dir;
   image_file_name = img_name;
-  
-   sharp(image_data)
-        .resize(300, 300)
-        .toBuffer(async (err, info) => {
-          if (err) {
-            console.log(err, "toBuffer error in uploader");
-          } else {
-            upload.single("file");
-             const s3Client = s3.s3Client;
-            const params = s3.uploadParams;
-            params.Key = savePath + image_file_name;
-            params.Body = info;
-             params.ContentType = "image/jpeg";
-            try {
-              let result = await s3Client.upload(params).promise();
-              response=image_file_name;
-            } catch (err) {
-              console.log("error in s3 uploading", err);
-            }
-          }
-        });
+
+  sharp(image_data)
+    .resize(300, 300)
+    .toBuffer(async (err, info) => {
+      if (err) {
+        console.log(err, "toBuffer error in uploader");
+      } else {
+        upload.single("file");
+        const s3Client = s3.s3Client;
+        const params = s3.uploadParams;
+        params.Key = savePath + image_file_name;
+        params.Body = info;
+        params.ContentType = "image/jpeg";
+        try {
+          let result = await s3Client.upload(params).promise();
+          response = image_file_name;
+        } catch (err) {
+          console.log("error in s3 uploading", err);
+        }
+      }
+    });
 
   return response;
 };
 const SEND_NOTIFICATION = async (message) => {
-	// Send a message to devices subscribed to the provided topic.
-	return admin
-		.messaging()
-		.send(message)
-		.then((response) => {
-			// Response is a message ID string.
-			console.log('Successfully sent message:', response);
-		})
-		.catch((error) => {
-			console.log('Error sending message:', error);
-		});
+  // Send a message to devices subscribed to the provided topic.
+  return admin
+    .messaging()
+    .send(message)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log("Successfully sent message:", response);
+    })
+    .catch((error) => {
+      console.log("Error sending message:", error);
+    });
+};
+
+//  AWS SES Email
+const NOTIFY_BY_EMAIL_FROM_SES = async (
+  email,
+  subject,
+  email_body,
+  attachments_file_array = []
+) => {
+  const SES_CONFIG = {
+    accessKeyId: "AKIASFHMCRVPU3V2LPUW",
+    secretAccessKey: "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",
+    region: "us-west-1",
+  };
+
+  const AWS_SES = new AWS.SES(SES_CONFIG);
+
+  let params = {
+    Source: "Meta Logix Tech<support@metalogixtech.com>",
+    Destination: {
+      ToAddresses: [email],
+    },
+    ReplyToAddresses: ["support@metalogixtech.com"],
+    Message: {
+      Body: {
+        Html: {
+          Charset: "UTF-8",
+          Data: email_body,
+        },
+      },
+      Subject: {
+        Charset: "UTF-8",
+        Data: subject,
+      },
+    },
+  };
+  return AWS_SES.sendEmail(params).promise(); // or something
 };
 module.exports = {
   RENDER_BAD_REQUEST,
@@ -198,5 +228,6 @@ module.exports = {
   UPLOAD_AND_RESIZE_FILE,
   UPLOAD_AUDIO_FILE,
   UPLOAD_S3_IMAGE,
-  SEND_NOTIFICATION
+  SEND_NOTIFICATION,
+  NOTIFY_BY_EMAIL_FROM_SES,
 };
