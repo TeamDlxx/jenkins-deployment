@@ -11,6 +11,7 @@ const cron = require("node-cron");
 const index = require("./src/routes");
 const app = express();
 const {do_backup} = require("./src/utils/backup");
+const fs = require("fs");
 
 app.use("/", index);
 
@@ -24,6 +25,13 @@ app.set("views", path.join(__dirname, "src", "views"));
 app.set("view engine", "ejs");
 
 app.use(logger("dev"));
+app.use(
+  logger("common", {
+    stream: fs.createWriteStream(path.join(__dirname, "access.log"), {
+      flags: "a",
+    }),
+  })
+);
 app.use(bodyParser.json({limit: "2mb"}));
 app.use(
   bodyParser.urlencoded({extended: false, limit: "2mb", parameterLimit: 1000})
