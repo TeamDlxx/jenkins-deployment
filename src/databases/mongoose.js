@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 mongoose.Promise = global.Promise;
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect("mongodb://127.0.0.1:27017/backend-template", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
