@@ -1,7 +1,7 @@
 const Joi = require("joi");
 function validateUser(user) {
   const schema = {
-    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
     password: Joi.string().min(5).max(255).required().trim(),
     type: Joi.number().required(),
   };
@@ -18,21 +18,21 @@ function validatePassword(user) {
 }
 function validateEmail(body) {
   const schema = {
-    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
   };
   return Joi.validate(body, schema);
 }
 
 function validateCode(body) {
   const schema = {
-    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
     verification_code: Joi.string().required().min(6),
   };
   return Joi.validate(body, schema);
 }
 function validateResetPassword(body) {
   const schema = {
-    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
     password: Joi.string().required().min(5),
     confirm_password: Joi.string().required().min(5),
   };
@@ -41,7 +41,7 @@ function validateResetPassword(body) {
 
 function validateEmail(user) {
   const schema = {
-    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
   };
   return Joi.validate(user, schema);
 }

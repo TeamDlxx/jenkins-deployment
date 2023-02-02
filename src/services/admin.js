@@ -1,5 +1,5 @@
-const {signup_admin, detail_admin} = require("../DAL/admin");
-const {signup_user, checking_email_exist} = require("../DAL/user");
+const { signup_admin, detail_admin } = require("../DAL/admin");
+const { signup_user, checking_email_exist } = require("../DAL/user");
 
 // signup admin
 const _signupAdmin = async (body, resp) => {
@@ -14,7 +14,7 @@ const _signupAdmin = async (body, resp) => {
   let user = await signup_user(body);
   if (!user) {
     resp.error = true;
-    resp.error_message = "Admin Sign up Failed";
+    resp.error_message = "User Signup Fail";
     return resp;
   }
   const admin = await signup_admin(body, user._id);
@@ -84,7 +84,7 @@ const _detailAdmin = async (user_id, resp) => {
   const admin = await detail_admin(user_id);
   if (!admin) {
     resp.error = true;
-    resp.error_message = "Admin Not Found";
+    resp.error_message = "Something Went Wrong Please Try Again";
     return resp;
   }
 

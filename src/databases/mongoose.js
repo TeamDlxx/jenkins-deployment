@@ -1,12 +1,9 @@
 const mongoose = require("mongoose");
 
 mongoose.Promise = global.Promise;
+mongoose.set("strictQuery", false);
 mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-  })
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("successfully connected to the database");
   })
@@ -15,4 +12,4 @@ mongoose
     console.log("error connecting to the database", err);
     process.exit();
   });
-module.exports = {mongoose};
+module.exports = { mongoose };
