@@ -1,13 +1,10 @@
-<<<<<<< HEAD
+
 const {signup_admin, detail_admin} = require("../DAL/admin");
 const {signup_user, checking_email_exist} = require("../DAL/user");
 //******************************************************** Admin Signup *****************************************************/
-=======
 const { signup_admin, detail_admin } = require("../DAL/admin");
 const { signup_user, checking_email_exist } = require("../DAL/user");
-
 // signup admin
->>>>>>> 7242729eafb334c5d862c1a9c6e6d046ff777302
 const _signupAdmin = async (body, resp) => {
   const checking_email = await checking_email_exist(body.email);
   if (checking_email) {

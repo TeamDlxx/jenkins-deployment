@@ -2,15 +2,10 @@ const bcrypt = require("bcrypt");
 const { User } = require("../../src/models/users");
 
 //checking user Existance
-<<<<<<< HEAD
+
 const find_user = async (body,user_id) => {
   return await User.findOne({email: body.email , _id:{$ne:user_id}});
-=======
-const find_user = async (body) => {
-  return await User.findOne({ email: body.email });
->>>>>>> 7242729eafb334c5d862c1a9c6e6d046ff777302
-};
-
+}
 // Get User By Id
 const find_user_by_id = async (user_id) => {
   return await User.findOne({ _id: user_id });
