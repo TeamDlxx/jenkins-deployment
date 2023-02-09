@@ -1,4 +1,4 @@
-const {validateEditAdmin} = require("../../utils/validation/validateAdmin");
+const {validate_edit_admin} = require("../../utils/validation/admin_validation");
 const {editAdmin} = require("../../services/admin");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
@@ -6,7 +6,7 @@ const edit_admin = async (req, res) => {
   try {
     //validate Request Body
     try {
-      await validateEditAdmin(req.body);
+      await validate_edit_admin(req.body);
     } catch (e) {
       return res
         .status(400)

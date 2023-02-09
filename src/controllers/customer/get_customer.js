@@ -3,10 +3,7 @@ const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
 const get_customers = async (req, res) => {
   try {
-    const {error, error_message, data} = await getCustomers(
-      req.query.limit,
-      req.query.page
-    );
+    const {error, error_message, data} = await getCustomers(req.query.limit,req.query.page);
 
     if (error) {
       return res.status(400).json({

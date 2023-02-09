@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-function validateAdmin(user) {
+function validate_admin_signup(body) {
   const schema = {
     first_name: Joi.string()
       .regex(/^[a-z A-Z]+$/)
@@ -20,10 +20,10 @@ function validateAdmin(user) {
     contact_number: Joi.string().trim().allow(null, ""),
     status: Joi.boolean().required(),
   };
-  return Joi.validate(user, schema);
+  return Joi.validate(body, schema);
 }
 
-function validateEditAdmin(user) {
+function validate_edit_admin(body) {
   const schema = {
     first_name: Joi.string()
       .regex(/^[a-z A-Z]+$/)
@@ -42,11 +42,11 @@ function validateEditAdmin(user) {
     profile_image: Joi.string().trim().required(),
     status: Joi.boolean().required(),
   };
-  return Joi.validate(user, schema);
+  return Joi.validate(body, schema);
 }
 
-// exports.validateAdmin = validateAdmin;
+// exports.validate_admin_signup = validate_admin_signup;
 module.exports = {
-  validateAdmin,
-  validateEditAdmin,
+  validate_admin_signup,
+  validate_edit_admin,
 };

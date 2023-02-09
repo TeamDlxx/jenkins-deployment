@@ -23,12 +23,12 @@ const {UPLOAD_IMAGE} = require("../utils/utils");
 const {SERVICE_ICON_SIZE} = require("../utils/constants");
 const {v1: uuidv1} = require("uuid");
 const {v1: uuidv4} = require("uuid");
-
+//******************************************************** Customer SignUp ************************************************/
 const _signupCustomer = async (body, resp) => {
   const user = await find_user(body);
   if (user) {
     resp.error = true;
-    resp.error_message = "Email Alreay axist";
+    resp.error_message = "Email Alreay exists";
     return resp;
   }
   body.type = 1;
@@ -58,9 +58,7 @@ const _signupCustomer = async (body, resp) => {
   //generating token'
   const access = "auth";
   const json_token = uuidv1();
-  const token = jwt
-    .sign({login_token: json_token, access}, process.env.JWT_SECRET)
-    .toString();
+  const token = jwt.sign({login_token: json_token, access}, process.env.JWT_SECRET).toString();
   const add_session = await add_to_session(json_token, customer_user._id);
   if (!add_session) {
     resp.error = true;
@@ -81,7 +79,7 @@ const signupCustomer = async (body) => {
   resp = await _signupCustomer(body, resp);
   return resp;
 };
-
+//********************************************************* Edit Customer *************************************************/
 const _editCustomer = async (body, user_id, resp) => {
   const user = await find_user_by_id(user_id);
   if (!user) {
@@ -95,14 +93,13 @@ const _editCustomer = async (body, user_id, resp) => {
     return resp;
   }
   if (user.type !== 1) {
-    // if (String(user._id) != String(customer_id)) {
     resp.error = true;
     resp.error_message = "You are unauthorized!";
     return resp;
-    // }
   }
   // find customer by id
   const customer_detail = await find_customer_by_user_id(user_id);
+
   if (!customer_detail) {
     resp.error = true;
     resp.error_message = "Invalid Customer";
@@ -127,7 +124,7 @@ const editCustomer = async (body, user_id) => {
   resp = await _editCustomer(body, user_id, resp);
   return resp;
 };
-
+//********************************************************* Get Customer **************************************************/
 const _getCustomers = async (Limit, page, resp) => {
   ///// pagination
   let limit = parseInt(Limit);
@@ -155,7 +152,6 @@ const _getCustomers = async (Limit, page, resp) => {
   resp.data = data;
   return resp;
 };
-
 const getCustomers = async (limit, page) => {
   let resp = {
     error: false,
@@ -167,6 +163,7 @@ const getCustomers = async (limit, page) => {
   resp = await _getCustomers(limit, page, resp);
   return resp;
 };
+//********************************************************* Detail Customer ************************************************/
 const _detailCustomer = async (user_id, resp) => {
   const user = await find_user_by_id(user_id);
   if (!user) {
@@ -180,11 +177,9 @@ const _detailCustomer = async (user_id, resp) => {
     return resp;
   }
   if (user.type !== 1) {
-    // if (String(user._id) != String(customer_id)) {
     resp.error = true;
     resp.error_message = "You are unauthorized!";
     return resp;
-    // }
   }
   const customer = await find_customer_by_user_id(user_id);
   if (!customer) {
@@ -195,7 +190,6 @@ const _detailCustomer = async (user_id, resp) => {
   resp.data = customer;
   return resp;
 };
-
 const detailCustomer = async (user_id) => {
   let resp = {
     error: false,
@@ -206,7 +200,7 @@ const detailCustomer = async (user_id) => {
   resp = await _detailCustomer(user_id, resp);
   return resp;
 };
-
+//********************************************************* Delete Customer *************************************************/
 const _deleteCustomer = async (user_id, resp) => {
   // find by id
   const custmer = await find_customer_by_user_id(user_id);
@@ -223,7 +217,6 @@ const _deleteCustomer = async (user_id, resp) => {
   const delete_customer_session = await delete_from_session_by_user_id(user_id);
   return resp;
 };
-
 const deleteCustomer = async (user_id) => {
   let resp = {
     error: false,
@@ -234,7 +227,7 @@ const deleteCustomer = async (user_id) => {
   resp = await _deleteCustomer(user_id, resp);
   return resp;
 };
-
+//********************************************************* Search Customer *************************************************/
 const _searchCustomer = async (text, Limit, page, resp) => {
   let limit = parseInt(Limit);
   if (!limit) {
@@ -259,7 +252,6 @@ const _searchCustomer = async (text, Limit, page, resp) => {
 
   return resp;
 };
-
 const searchCustomer = async (text, limit, page) => {
   let resp = {
     error: false,
@@ -270,6 +262,7 @@ const searchCustomer = async (text, limit, page) => {
   resp = await _searchCustomer(text, limit, page, resp);
   return resp;
 };
+//**************************************************************************************************************************/
 module.exports = {
   signupCustomer,
   editCustomer,
