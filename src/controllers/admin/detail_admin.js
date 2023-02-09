@@ -1,9 +1,9 @@
-const {detailAdmin} = require("../../services/admin");
-const {RENDER_BAD_REQUEST} = require("../../utils/utils");
+const { detailAdmin } = require("../../services/admin");
+const { RENDER_BAD_REQUEST } = require("../../utils/utils");
 
 const detail_admin = async (req, res) => {
   try {
-    const {error, error_message, data} = await detailAdmin(req.user);
+    const { error, error_message, data } = await detailAdmin(req.user);
 
     if (error) {
       return res.status(400).json({

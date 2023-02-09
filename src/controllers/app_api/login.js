@@ -1,7 +1,8 @@
 const {validate_user} = require("../../utils/validation/app_api");
 const {loginUser} = require("../../services/app_api");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
-
+const { loginUser } = require("../../services/app_api");
+const { RENDER_BAD_REQUEST } = require("../../utils/utils");
 const login = async (req, res) => {
   try {
     //validate Request Body
@@ -10,10 +11,10 @@ const login = async (req, res) => {
     } catch (e) {
       return res
         .status(400)
-        .json({code: 400, message: e.details[0].message.replace(/\"/g, "")});
+        .json({ code: 400, message: e.details[0].message.replace(/\"/g, "") });
     }
 
-    const {error, error_message, data} = await loginUser(req.body);
+    const { error, error_message, data } = await loginUser(req.body);
 
     if (error) {
       return res.status(400).json({
@@ -26,7 +27,7 @@ const login = async (req, res) => {
       code: 200,
       message: "Login Successfull",
       token: data.token,
-      user: data.admin,
+      user: data.details,
     });
   } catch (e) {
     RENDER_BAD_REQUEST(res, e);

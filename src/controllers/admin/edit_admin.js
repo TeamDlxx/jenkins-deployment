@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 const {validate_edit_admin} = require("../../utils/validation/admin_validation");
 const {editAdmin} = require("../../services/admin");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
+=======
+const { validateEditAdmin } = require("../../utils/validation/validateAdmin");
+const { editAdmin } = require("../../services/admin");
+const { RENDER_BAD_REQUEST } = require("../../utils/utils");
+>>>>>>> 7242729eafb334c5d862c1a9c6e6d046ff777302
 
 const edit_admin = async (req, res) => {
   try {
@@ -10,10 +16,10 @@ const edit_admin = async (req, res) => {
     } catch (e) {
       return res
         .status(400)
-        .json({code: 400, message: e.details[0].message.replace(/\"/g, "")});
+        .json({ code: 400, message: e.details[0].message.replace(/\"/g, "") });
     }
 
-    const {error, error_message, data} = await editAdmin(req.body, req.user);
+    const { error, error_message, data } = await editAdmin(req.body, req.user);
 
     if (error) {
       return res.status(400).json({

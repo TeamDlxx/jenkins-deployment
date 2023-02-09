@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "we-fix-backend",
   "version": "0.0.0",
@@ -64,3 +65,60 @@
   "homepage": "https://github.com/teamdlxx/dlx-node-api-backend#readme",
   "description": ""
 }
+=======
+{
+  "name": "backend-template-dlx",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "NODE_ENV=dev forever start ./bin/www.backend.template-dlx",
+    "prod": "NODE_ENV=prod forever start ./bin/www.backend.template-dlx",
+    "start": "node ./bin/www.backend.template-dlx",
+    "local": "nodemon",
+    "clean": "rm -rf node_modules/ && npm cache clean --force && npm install",
+    "clean:win": "rmdir /s /q node_modules && npm cache clean --force && npm install"
+  },
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "@sendgrid/mail": "^7.7.0",
+    "aws-sdk": "^2.1304.0",
+    "axios": "^1.2.6",
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "debug": "~4.3.4",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "fs-extra": "^11.1.0",
+    "geolib": "^3.3.3",
+    "get-audio-duration": "^3.1.1",
+    "http-errors": "~2.0.0",
+    "joi": "^14.3.0",
+    "joi-objectid": "^4.0.2",
+    "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "mongoose": "^6.9.0",
+    "mongoose-order-manager": "^1.0.3",
+    "mongoose-timestamp": "^0.6.0",
+    "moongoose": "0.0.5",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "node-cron": "^3.0.2",
+    "path": "^0.12.7",
+    "sequelize": "^6.28.0",
+    "sharp": "^0.31.3",
+    "stripe": "^11.8.0",
+    "twilio": "^3.84.1",
+    "uuid": "^9.0.0",
+    "uuidv1": "^1.6.14",
+    "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
+>>>>>>> 7242729eafb334c5d862c1a9c6e6d046ff777302

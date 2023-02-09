@@ -4,9 +4,11 @@ const { checking_session } = require("../DAL/session");
 const authenticate = async (req, res, next) => {
   const token = req.header("x-sh-auth");
   if (!token) {
-    res.status(401).send();
+    return res.status(401).json({
+      code: 401,
+      message: "No Token Provided",
+    });
   } else {
-    // TODO
     try {
       let authorized = false;
       let login_token = "";
@@ -24,14 +26,17 @@ const authenticate = async (req, res, next) => {
         req.user = is_sssion.user_id;
         next();
       } else {
-        res.status(401).json({
+        return res.status(401).json({
           code: 401,
           message: "Invalid Token",
         });
       }
     } catch (e) {
       console.log("error", e);
-      res.status(401).send();
+      return res.status(401).json({
+        code: 401,
+        message: "Invalid Token",
+      });
     }
   }
 };

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {register_route} = require("../../../utils/reg_routes");
+const { register_route } = require("../../../utils/reg_routes");
 const signup_admin = require("../../../controllers/admin/signup");
 const edit_admin = require("../../../controllers/admin/edit_admin");
 const detail_admin = require("../../../controllers/admin/detail_admin");

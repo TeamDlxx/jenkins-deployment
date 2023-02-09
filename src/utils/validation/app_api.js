@@ -2,7 +2,7 @@ const Joi = require("joi");
 //******************************************************* User Validation for Login *****************************************/
 function validate_user(user) {
   const schema = {
-    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
     password: Joi.string().min(5).max(255).required().trim(),
     type: Joi.number().required(),
   };
@@ -20,14 +20,14 @@ function validate_password(user) {
 //******************************************************* Email Validation **************************************************/
 function validate_email(body) {
   const schema = {
-    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
   };
   return Joi.validate(body, schema);
 }
 /******************************************************** Code Verification *************************************************/
 function validate_verification_code(body) {
   const schema = {
-    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
     verification_code: Joi.string().required().min(6),
   };
   return Joi.validate(body, schema);
@@ -35,14 +35,13 @@ function validate_verification_code(body) {
 /******************************************************** Validate Password ************************************************/
 function validate_reset_password(body) {
   const schema = {
-    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
+    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
     password: Joi.string().required().min(5),
     confirm_password: Joi.string().required().min(5),
   };
   return Joi.validate(body, schema);
 }
 /***************************************************************************************************************************/
-
 module.exports = {
   validate_user,
   validate_password,

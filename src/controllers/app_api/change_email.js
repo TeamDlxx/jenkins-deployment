@@ -1,7 +1,8 @@
 const {validate_email} = require("../../utils/validation/app_api");
 const {changeEmail} = require("../../services/app_api");
-const {RENDER_BAD_REQUEST} = require("../../utils/utils");
-
+const {RENDER_BAD_REQUEST} = require("../../utils/utils")
+const { changeEmail } = require("../../services/app_api");
+const { RENDER_BAD_REQUEST } = require("../../utils/utils");
 const change_email = async (req, res) => {
   try {
     //validate Request Body
@@ -10,10 +11,10 @@ const change_email = async (req, res) => {
     } catch (e) {
       return res
         .status(400)
-        .json({code: 400, message: e.details[0].message.replace(/\"/g, "")});
+        .json({ code: 400, message: e.details[0].message.replace(/\"/g, "") });
     }
 
-    const {error, error_message} = await changeEmail(req.body, req.user);
+    const { error, error_message } = await changeEmail(req.body, req.user);
 
     if (error) {
       return res.status(400).json({
