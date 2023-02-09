@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-const {validate_admin_signup} = require("../../utils/validation/admin_validation");
-const {signupAdmin} = require("../../services/admin");
-const {RENDER_BAD_REQUEST} = require("../../utils/utils");
-=======
-const { validateAdmin } = require("../../utils/validation/validateAdmin");
+const {
+  validate_admin_signup,
+} = require("../../utils/validation/admin_validation");
 const { signupAdmin } = require("../../services/admin");
 const { RENDER_BAD_REQUEST } = require("../../utils/utils");
->>>>>>> 7242729eafb334c5d862c1a9c6e6d046ff777302
 
 const signup_admin = async (req, res) => {
   try {
