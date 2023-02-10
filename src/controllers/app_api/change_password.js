@@ -1,16 +1,16 @@
-const {validate_password} = require("../../utils/validation/app_api");
+const {validatePassword} = require("../../utils/validation/app_api");
 const {changePassword} = require("../../services/app_api");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
 const change_password = async (req, res) => {
   try {
-    
+    //validate Request Body
     try {
-      await validate_password(req.body);
+      await validatePassword(req.body);
     } catch (e) {
-
-      return res.status(400).json({code: 400, message: e.details[0].message.replace(/\"/g, "")});
-
+      return res
+        .status(400)
+        .json({code: 400, message: e.details[0].message.replace(/\"/g, "")});
     }
 
     const {error, error_message} = await changePassword(req.body, req.user);

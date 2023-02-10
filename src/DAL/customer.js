@@ -18,6 +18,7 @@ const total_customer = async (id) => {
 const latest_customer = async (id) => {
   return await Customer.find().sort({ createdAt: -1 }).limit(5);
 };
+
 const pagination_customer = async (skip, limit) => {
   return await Customer.find()
     .sort({ createdAt: -1 })

@@ -1,7 +1,8 @@
 const sharp = require("sharp");
 const s3 = require("../../config/S3_config/s3.config");
 let upload = require("../../config/S3_config/multer.config");
-const { v1: uuidv4 } = require("uuid");
+const {TYPE_IMAGE, TYPE_AUDIO} = require("../utils/constants");
+const {v1: uuidv4} = require("uuid");
 const fs = require("fs-extra");
 const path = require("path");
 const AWS = require("aws-sdk");
@@ -10,14 +11,83 @@ const RENDER_BAD_REQUEST = (res, error) => {
   console.log(error);
   if (error.message) {
     res.status(400).json({
-      code: 400,
       message: error.message,
     });
   } else {
     res.status(400).send(error);
   }
 };
+// change order in delete case
+const CHANGE_DEL_ORDER = async (current_order, schema) => {
+  let doc = await schema.find({
+    order: {
+      $gte: current_order,
+    },
+  });
+  const promise = doc.map(async (Obj) => {
+    Obj.order = Obj.order - 1;
+    await Obj.save();
+  });
+  await Promise.all(promise);
+};
 
+//ORDER_CHANGE_TO_LOWER
+const ORDER_CHANGE_TO_LOWER = async (current_order, past_order, schema) => {
+  let doc = await schema.find({
+    order: {
+      $gte: current_order,
+      $lte: past_order,
+    },
+  });
+  console.log(doc, "doc");
+  const promise = doc.map(async (Obj) => {
+    Obj.order = Obj.order + 1;
+    await Obj.save();
+  });
+  await Promise.all(promise);
+};
+
+//_ORDER_CHANGE_TO_UPPER
+const ORDER_CHANGE_TO_UPPER = async (current_order, past_order, schema) => {
+  let doc = await schema.find({
+    order: {
+      $gte: past_order,
+      $lte: current_order,
+    },
+  });
+  console.log(doc, "this is doc");
+  const promise = doc.map(async (Obj) => {
+    Obj.order = Obj.order - 1;
+    await Obj.save();
+  });
+  await Promise.all(promise);
+};
+
+const SEND_EMAIL = async (code, receiver) => {
+  require("dotenv").config();
+  const sg_mail = require("@sendgrid/mail");
+  console.log(process.env.EMAIL_API_KEY, "KEY");
+  sg_mail.setApiKey(process.env.EMAIL_API_KEY);
+  const message = {
+    to: receiver,
+    from: process.env.EMAIL_FROM,
+    subject: "Verification code",
+    text: `Here is code you can use to reset password ${code}`,
+    //html: "<h1>This is html</h1>",
+  };
+  const result = await sg_mail
+    .send(message)
+    .then((res) => {
+      console.log("Email Sent");
+      return res;
+    })
+    .catch((err) => {
+      console.log("Email did not  Send", err);
+      return err;
+    });
+  return result;
+};
+///////////Upload File
 const UPLOAD_AUDIO_FILE = async (files, resp) => {
   const myPromise = new Promise(async (resolve, reject) => {
     try {
@@ -149,167 +219,29 @@ const NOTIFY_BY_EMAIL_FROM_SES = async (
   };
   return AWS_SES.sendEmail(params).promise(); // or something
 };
-const UPLOAD_SINGLE_IMAGE_on_S3 = async (
-  image,
-  FILE_PATH,
-  file_extension,
-  width,
-  height = 670
-) => {
-  if (
-    file_extension == ".pdf" ||
-    file_extension == ".PDF" ||
-    file_extension == ".EXCEL" ||
-    file_extension == ".excel" ||
-    file_extension == ".DOCX" ||
-    file_extension == ".docx" ||
-    file_extension == ".mp3" ||
-    file_extension == ".XLSX" ||
-    file_extension == ".xlsx" ||
-    file_extension == ".XLS" ||
-    file_extension == ".xls" ||
-    file_extension == ".CSV" ||
-    file_extension == ".csv" ||
-    file_extension == ".DOC" ||
-    file_extension == ".doc" ||
-    file_extension == ".GIF" ||
-    file_extension == ".gif"
-  ) {
-    const myPromise = new Promise(async (resolve, reject) => {
-      let path = FILE_PATH + uuidv4() + file_extension;
-
-      upload.single("file");
-      const s3Client = s3.s3Client;
-      const params = s3.uploadParams;
-      params.Key = path;
-      params.Body = image.data;
-      params.ContentType = image.mimetype;
-      try {
-        let result = await s3Client.upload(params).promise();
-      } catch (err) {
-        console.log("error in s3 uploading", err);
-        reject(err);
-      }
-
-      resolve(path);
-    });
-    return myPromise;
-  } else {
-    const myPromise = new Promise(async (resolve, reject) => {
-      let path = FILE_PATH + uuidv4() + file_extension;
-      sharp(image.data)
-        .resize(width, height, {
-          fit: sharp.fit.inside,
-          withoutEnlargement: true,
-        })
-        .withMetadata()
-        .toBuffer(async (err, info) => {
-          if (err) {
-            console.log(err, "toBuffer error in uploader");
-          } else {
-            upload.single("file");
-            const s3Client = s3.s3Client;
-            const params = s3.uploadParams;
-            params.Key = path;
-            params.Body = info;
-            params.ContentType = "image/jpeg";
-            try {
-              let result = await s3Client.upload(params).promise();
-            } catch (err) {
-              console.log("error in s3 uploading", err);
-              reject(err);
-            }
-          }
-        });
-      resolve(path);
-    });
-    return myPromise;
+const MAX_ORDER = async (modelName, query_obj = {}) => {
+  let max_order = 0;
+  let x;
+  x = await modelName
+    .findOne(query_obj)
+    .sort({ order: -1 })
+    .limit(1)
+    .select({ order: 1, _id: 0 });
+  if (x) {
+    max_order = x.order;
   }
+  return max_order;
 };
-
-const UPLOAD_IMAGE_on_S3 = async (image, image_size_array, FILE_PATH) => {
-  const myPromise = new Promise(async (resolve, reject) => {
-    let file_extension = path.extname(image.name);
-
-    if (file_extension == ".GIF" || file_extension == ".gif") {
-      let main_images_obj = {};
-      for (var a = 0; a < image_size_array.length; a++) {
-        let height = image_size_array[a].height;
-        let width = image_size_array[a].width;
-        let path = FILE_PATH + uuidv4() + file_extension;
-
-        upload.single("file");
-        const s3Client = s3.s3Client;
-        const params = s3.uploadParams;
-        params.Key = path;
-        params.Body = image.data;
-        params.ContentType = image.mimetype;
-        // params.ContentType = "image/jpeg";
-        try {
-          let result = await s3Client.upload(params).promise();
-        } catch (err) {
-          //console.log("error in s3 uploading", err);
-          reject(err);
-        }
-
-        let obj_name = image_size_array[a].name;
-        let main_image_obj = {
-          [obj_name]: path,
-        };
-        main_images_obj = { ...main_images_obj, ...main_image_obj };
-      }
-      resolve(main_images_obj);
-    } else {
-      let main_images_obj = {};
-      for (var a = 0; a < image_size_array.length; a++) {
-        let height = image_size_array[a].height;
-        let width = image_size_array[a].width;
-        let path = FILE_PATH + uuidv4() + file_extension;
-
-        sharp(image.data)
-          .resize(width, height, {
-            fit: sharp.fit.inside,
-            withoutEnlargement: true,
-          })
-          .withMetadata()
-          .toBuffer(async (err, info) => {
-            if (err) {
-              //console.log(err, "toBuffer error in uploader");
-              reject(err);
-            } else {
-              upload.single("file");
-              const s3Client = s3.s3Client;
-              const params = s3.uploadParams;
-              params.Key = path;
-              params.Body = info;
-              //  params.ContentType = image.mimetype;
-              params.ContentType = "image/jpeg";
-              try {
-                let result = await s3Client.upload(params).promise();
-              } catch (err) {
-                //console.log("error in s3 uploading", err);
-              }
-            }
-          });
-        let obj_name = image_size_array[a].name;
-        let main_image_obj = {
-          [obj_name]: path,
-        };
-        main_images_obj = { ...main_images_obj, ...main_image_obj };
-      }
-      resolve(main_images_obj);
-    }
-  });
-  return myPromise;
-};
-
 module.exports = {
   RENDER_BAD_REQUEST,
+  CHANGE_DEL_ORDER,
+  ORDER_CHANGE_TO_LOWER,
+  ORDER_CHANGE_TO_UPPER,
+  SEND_EMAIL,
   UPLOAD_AND_RESIZE_FILE,
   UPLOAD_AUDIO_FILE,
   UPLOAD_S3_IMAGE,
   SEND_NOTIFICATION,
   NOTIFY_BY_EMAIL_FROM_SES,
-  UPLOAD_SINGLE_IMAGE_on_S3,
-  UPLOAD_IMAGE_on_S3,
+  MAX_ORDER
 };

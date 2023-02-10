@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { register_route } = require("../../../utils/reg_routes");
+const {register_route} = require("../../../utils/reg_routes");
 const login = require("../../../controllers/app_api/login");
 const change_password = require("../../../controllers/app_api/change_password");
 const change_email = require("../../../controllers/app_api/change_email");
@@ -10,6 +10,7 @@ const reset_password = require("../../../controllers/app_api/reset_password");
 const uplaod_image_s3 = require("../../../controllers/app_api/uplaod_image_s3");
 const uplaod_image = require("../../../controllers/app_api/uplaod_image");
 const uplaod_audio = require("../../../controllers/app_api/uplaod_audio");
+
 register_route({
   router,
   route: "/login",

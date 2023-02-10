@@ -1,4 +1,4 @@
-const { v1: uuidv1 } = require("uuid");
+const {v1: uuidv1} = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {
@@ -17,12 +17,19 @@ const {
   find_user_by_id,
   checking_email_exist,
 } = require("../DAL/user");
-const { detail_admin } = require("../DAL/admin");
-const { v1: uuidv4 } = require("uuid");
-const { getAudioDurationInSeconds } = require("get-audio-duration");
+const {detail_admin} = require("../DAL/admin");
+const {
+  find_customer_by_user_id,
+  find_customer_by_id,
+} = require("../DAL/customer");
+const {find_admin_by_user_id} = require("../DAL/admin");
+const {v1: uuidv4} = require("uuid");
+const {getAudioDurationInSeconds} = require("get-audio-duration");
+const axios = require("axios");
 const fs = require("fs");
-//****************************************************** User Login *********************************************************/
+
 const _loginUser = async (body, resp) => {
+  //
   const user = await find_user(body);
   if (!user) {
     resp.error = true;
@@ -41,13 +48,13 @@ const _loginUser = async (body, resp) => {
     resp.error_message = "Invalid Email or Password";
     return resp;
   }
-  //generating token'
+
+  //generating token
   const access = "auth";
   const json_token = uuidv1();
   const token = jwt
-    .sign({ login_token: json_token, access }, process.env.JWT_SECRET)
+    .sign({login_token: json_token, access}, process.env.JWT_SECRET)
     .toString();
-
   const add_session = await add_to_session(json_token, user._id);
 
   if (!add_session) {
@@ -58,6 +65,8 @@ const _loginUser = async (body, resp) => {
   let detail;
   if (user.type == 0) {
     detail = await detail_admin(user._id);
+  } else {
+    detail = await find_customer_by_user_id(user._id);
   }
 
   resp.data = {
@@ -67,7 +76,8 @@ const _loginUser = async (body, resp) => {
 
   return resp;
 };
-const loginUser = async body => {
+
+const loginUser = async (body) => {
   let resp = {
     error: false,
     error_message: "",
@@ -77,7 +87,7 @@ const loginUser = async body => {
   resp = await _loginUser(body, resp);
   return resp;
 };
-//****************************************************** Change Password ****************************************************/
+
 const _changePassword = async (body, user_id, resp) => {
   if (body.new_password !== body.confirm_password) {
     resp.error = true;
@@ -101,9 +111,12 @@ const _changePassword = async (body, user_id, resp) => {
     resp.error_message = "Old Password Is Incorrect";
     return resp;
   }
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(body.new_password, salt);
   user = await user.save();
   return resp;
 };
+
 const changePassword = async (body, user_id) => {
   let resp = {
     error: false,
@@ -114,7 +127,7 @@ const changePassword = async (body, user_id) => {
   resp = await _changePassword(body, user_id, resp);
   return resp;
 };
-//******************************************************* Change Email ******************************************************/
+
 const _changeEmail = async (body, user_id, resp) => {
   let user = await find_user_by_id(user_id);
   if (!user) {
@@ -122,8 +135,9 @@ const _changeEmail = async (body, user_id, resp) => {
     resp.error_message = "Something Went Wrong";
     return resp;
   }
+
   if (body.email !== user.email) {
-    let check_user_email = await find_user(body, user_id);
+    let check_user_email = await find_user(body);
     if (check_user_email) {
       resp.error = true;
       resp.error_message = "User With This Email Already Exist";
@@ -135,6 +149,7 @@ const _changeEmail = async (body, user_id, resp) => {
   user = await user.save();
   return resp;
 };
+
 const changeEmail = async (body, user_id) => {
   let resp = {
     error: false,
@@ -145,7 +160,7 @@ const changeEmail = async (body, user_id) => {
   resp = await _changeEmail(body, user_id, resp);
   return resp;
 };
-//******************************************************* Logout ***********************************************************/
+
 const _logoutUser = async (user_id, resp) => {
   const session = await get_session_by_user_id(user_id);
   if (!session) {
@@ -161,7 +176,8 @@ const _logoutUser = async (user_id, resp) => {
   }
   return resp;
 };
-const logoutUser = async user_id => {
+
+const logoutUser = async (user_id) => {
   let resp = {
     error: false,
     error_message: "",
@@ -171,8 +187,9 @@ const logoutUser = async user_id => {
   resp = await _logoutUser(user_id, resp);
   return resp;
 };
-/******************************************************** Email Verification ***********************************************/
-const _emailVerification = async (body, resp) => {
+
+/********************** Validate Email Address**********************/
+const _validateEmailAddress = async (body, resp) => {
   // find user by email
   const user = await checking_email_exist(body.email);
   if (!user) {
@@ -190,18 +207,20 @@ const _emailVerification = async (body, resp) => {
   await NOTIFY_BY_EMAIL_FROM_SES(user.email, subject, email_body);
   return resp;
 };
-const emailVerification = async body => {
+
+const validateEmailAddress = async (body) => {
   let resp = {
     error: false,
     error_message: "",
     data: {},
   };
 
-  resp = await _emailVerification(body, resp);
+  resp = await _validateEmailAddress(body, resp);
   return resp;
 };
-//******************************************************* Code Verification ***********************************************/
-const _codeVerification = async (body, resp) => {
+
+//*************** Validate Code*******************/
+const _codeValidation = async (body, resp) => {
   // find user by email
   const user = await checking_email_exist(body.email);
   if (!user) {
@@ -209,6 +228,7 @@ const _codeVerification = async (body, resp) => {
     resp.error_message = "Invalid Email Address";
     return resp;
   }
+
   if (user.verification_code == body.verification_code) {
     user.verification_code = "";
     user.verification_status = true;
@@ -216,21 +236,23 @@ const _codeVerification = async (body, resp) => {
     return resp;
   } else {
     resp.error = true;
-    resp.error_message = "Invalid Verification Code";
+    resp.error_message = "Invalid code or code is expire";
     return resp;
   }
 };
-const codeVerification = async body => {
+
+const codeValidation = async (body) => {
   let resp = {
     error: false,
     error_message: "",
     data: {},
   };
 
-  resp = await _codeVerification(body, resp);
+  resp = await _codeValidation(body, resp);
   return resp;
 };
-/**************************************************** Reset Password *******************************************************/
+
+//****************Reset Password ********************/
 const _resetPassword = async (body, resp) => {
   // find user by email
   const user = await checking_email_exist(body.email);
@@ -242,7 +264,7 @@ const _resetPassword = async (body, resp) => {
 
   if (body.password !== body.confirm_password) {
     resp.error = true;
-    resp.error_message = "Password and confirm password not match";
+    resp.error_message = "Password and confirm password are not matched";
     return resp;
   }
   if (user.verification_status !== true) {
@@ -251,12 +273,14 @@ const _resetPassword = async (body, resp) => {
     return resp;
   }
 
-  user.password = body.password;
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(body.password, salt);
   user.verification_status = false;
   await user.save();
   return resp;
 };
-const resetPassword = async body => {
+
+const resetPassword = async (body) => {
   let resp = {
     error: false,
     error_message: "",
@@ -266,7 +290,7 @@ const resetPassword = async body => {
   resp = await _resetPassword(body, resp);
   return resp;
 };
-/**************************************************** Upload Image S3 *********************************************************/
+
 const _uplaodImageS3 = async (files, resp) => {
   if (
     files == null ||
@@ -298,7 +322,8 @@ const _uplaodImageS3 = async (files, resp) => {
   };
   return resp;
 };
-const uplaodImageS3 = async files => {
+
+const uplaodImageS3 = async (files) => {
   let resp = {
     error: false,
     error_message: "",
@@ -308,7 +333,7 @@ const uplaodImageS3 = async files => {
   resp = await _uplaodImageS3(files, resp);
   return resp;
 };
-/**************************************************** Upload Image ***********************************************************/
+
 const _uplaodImage = async (files, resp) => {
   if (
     files == null ||
@@ -327,7 +352,7 @@ const _uplaodImage = async (files, resp) => {
   const upload_image_response = await UPLOAD_AND_RESIZE_FILE(
     files.image.data,
     dir,
-    { width: 200 }
+    {width: 200}
   );
   if (upload_image_response == false) {
     resp.error = true;
@@ -340,7 +365,8 @@ const _uplaodImage = async (files, resp) => {
   };
   return resp;
 };
-const uplaodImage = async files => {
+
+const uplaodImage = async (files) => {
   let resp = {
     error: false,
     error_message: "",
@@ -350,7 +376,7 @@ const uplaodImage = async files => {
   resp = await _uplaodImage(files, resp);
   return resp;
 };
-/**************************************************** Upload Audio **********************************************************/
+
 const _uplaodAudio = async (files, resp) => {
   if (
     files == null ||
@@ -367,9 +393,10 @@ const _uplaodAudio = async (files, resp) => {
   if (response.error) {
     return response;
   }
+  console.log(response, "response");
   // calculate duration of audio file
   await getAudioDurationInSeconds("./src/utils/audio/" + response).then(
-    duration_in_sec => {
+    (duration_in_sec) => {
       let duration_in_hours = Math.floor(duration_in_sec / 3600); // get hours
       let duration_in_minutes = Math.floor(
         (duration_in_sec - duration_in_hours * 3600) / 60
@@ -392,10 +419,11 @@ const _uplaodAudio = async (files, resp) => {
     // if no error, file has been deleted successfully
     console.log("File deleted!");
   });
-  resp.data = { path: response };
+  resp.data = {path: response};
   return resp;
 };
-const uplaodAudio = async files => {
+
+const uplaodAudio = async (files) => {
   let resp = {
     error: false,
     error_message: "",
@@ -405,13 +433,13 @@ const uplaodAudio = async files => {
   resp = await _uplaodAudio(files, resp);
   return resp;
 };
-/****************************************************************************************************************************/
+
 module.exports = {
   loginUser,
   changePassword,
   logoutUser,
-  emailVerification,
-  codeVerification,
+  validateEmailAddress,
+  codeValidation,
   resetPassword,
   changeEmail,
   uplaodImageS3,

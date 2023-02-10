@@ -1,15 +1,14 @@
 const Joi = require("joi");
-//******************************************************* User Validation for Login *****************************************/
-function validate_user(user) {
+function validateUser(user) {
   const schema = {
-    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
+    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
     password: Joi.string().min(5).max(255).required().trim(),
     type: Joi.number().required(),
   };
   return Joi.validate(user, schema);
 }
-//******************************************************* Password Validation **********************************************/
-function validate_password(user) {
+
+function validatePassword(user) {
   const schema = {
     old_password: Joi.string().min(5).max(255).required().trim(),
     new_password: Joi.string().min(5).max(255).required().trim(),
@@ -17,35 +16,40 @@ function validate_password(user) {
   };
   return Joi.validate(user, schema);
 }
-//******************************************************* Email Validation **************************************************/
-function validate_email(body) {
+function validateEmail(body) {
   const schema = {
-    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
+    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
   };
   return Joi.validate(body, schema);
 }
-/******************************************************** Code Verification *************************************************/
-function validate_verification_code(body) {
+
+function validateCode(body) {
   const schema = {
-    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
+    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
     verification_code: Joi.string().required().min(6),
   };
   return Joi.validate(body, schema);
 }
-/******************************************************** Validate Password ************************************************/
-function validate_reset_password(body) {
+function validateResetPassword(body) {
   const schema = {
-    email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
+    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
     password: Joi.string().required().min(5),
     confirm_password: Joi.string().required().min(5),
   };
   return Joi.validate(body, schema);
 }
-/***************************************************************************************************************************/
+
+function validateEmail(user) {
+  const schema = {
+    email: Joi.string().required().email({minDomainAtoms: 2}).trim(),
+  };
+  return Joi.validate(user, schema);
+}
+
 module.exports = {
-  validate_user,
-  validate_password,
-  validate_email,
-  validate_verification_code,
-  validate_reset_password,
+  validateUser,
+  validatePassword,
+  validateEmail,
+  validateCode,
+  validateResetPassword,
 };

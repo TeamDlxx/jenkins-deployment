@@ -1,19 +1,19 @@
-const {validate_verification_code} = require("../../utils/validation/app_api");
-const {codeVerification} = require("../../services/app_api");
+const {validateCode} = require("../../utils/validation/app_api");
+const {codeValidation} = require("../../services/app_api");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
 const code_verification = async (req, res) => {
   try {
     //validate Request Body
     try {
-      await validate_verification_code(req.body);
+      await validateCode(req.body);
     } catch (e) {
       return res
         .status(400)
         .json({code: 400, message: e.details[0].message.replace(/\"/g, "")});
     }
 
-    const {error, error_message, data} = await codeVerification(req.body);
+    const {error, error_message, data} = await codeValidation(req.body);
 
     if (error) {
       return res.status(400).json({

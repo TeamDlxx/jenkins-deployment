@@ -1,12 +1,12 @@
-const {validate_customer_signup} = require("../../utils/validation/customer");
+const {validateCustomerSignup} = require("../../utils/validation/customer");
 const {signupCustomer} = require("../../services/customer");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
 const signup_customer = async (req, res) => {
   try {
-    //validate Request Body
+   // validate Request Body
     try {
-      await validate_customer_signup(req.body);
+      await validateCustomerSignup(req.body);
     } catch (e) {
       return res
         .status(400)
@@ -14,7 +14,6 @@ const signup_customer = async (req, res) => {
     }
 
     const {error, error_message, data} = await signupCustomer(req.body);
-
     if (error) {
       return res.status(400).json({
         code: 400,

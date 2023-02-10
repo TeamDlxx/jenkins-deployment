@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-function validate_customer_signup(body) {
+function validateCustomerSignup(body) {
   const schema = {
     email: Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
     password: Joi.string().min(5).max(255).required().trim(),
@@ -11,7 +11,7 @@ function validate_customer_signup(body) {
   };
   return Joi.validate(body, schema);
 }
-function validate_edit_customer(body) {
+function validateEditCustomerSignup(body) {
   const schema = {
     first_name: Joi.string().required().min(2).trim(),
     last_name: Joi.string().required().min(2).trim(),
@@ -23,6 +23,6 @@ function validate_edit_customer(body) {
 }
 
 module.exports = {
-  validate_customer_signup,
-  validate_edit_customer,
+  validateCustomerSignup,
+  validateEditCustomerSignup,
 };

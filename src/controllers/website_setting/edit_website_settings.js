@@ -1,4 +1,6 @@
-const {validateWebsiteSetting,} = require("../../utils/validation/validateWebsiteSettings");
+const {
+  validateWebsiteSetting,
+} = require("../../utils/validation/validateWebsiteSettings");
 const {editWebsiteSetting} = require("../../services/website_setting");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 

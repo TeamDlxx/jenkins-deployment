@@ -127,3 +127,5 @@
 ::1 - - [01/Feb/2023:06:40:48 +0000] "POST /api/app_api/login HTTP/1.1" 200 250
 ::1 - - [01/Feb/2023:06:41:00 +0000] "POST /api/app_api/login HTTP/1.1" 200 250
 
+::1 - - [10/Feb/2023:06:12:15 +0000] "POST /api/admin/signup_admin HTTP/1.1" 200 310
+::1 - - [10/Feb/2023:06:12:45 +0000] "POST /api/customer/signup_customer HTTP/1.1" 200 471

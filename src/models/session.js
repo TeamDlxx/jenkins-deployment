@@ -5,7 +5,7 @@ const _ = require("lodash");
 const sessionSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "adminUser",
   },
 
   token: {
@@ -30,4 +30,4 @@ sessionSchema.methods.toJSON = function () {
 };
 
 const Session = mongoose.model("sessions", sessionSchema);
-module.exports = { Session };
+module.exports = {Session};

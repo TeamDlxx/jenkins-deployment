@@ -7,13 +7,16 @@ const admin_authenticate = async (req, res, next) => {
     const user_id = req.user;
     let admin = await is_user_authorized(user_id);
     if (!admin) {
-      return res.status(401).json({ code: 401, message: "Unathurized " });
+      return res
+        .status(401)
+        .json({ code: 401, message: "You Are Not Authorized" });
     }
     next();
   } catch (e) {
+    console.log("error", e);
     return res
       .status(401)
-      .json({ code: 401, message: "Invalid Token", Error_Error: e.message });
+      .json({ code: 401, message: "Invalid Token", Error_Error: e });
   }
 };
 

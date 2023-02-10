@@ -1,4 +1,4 @@
-const {validate_edit_customer} = require("../../utils/validation/customer");
+const {validateEditCustomerSignup} = require("../../utils/validation/customer");
 const {editCustomer} = require("../../services/customer");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
@@ -6,7 +6,7 @@ const edit_customer = async (req, res) => {
   try {
     //validate Request Body
     try {
-      await validate_edit_customer(req.body);
+      await validateEditCustomerSignup(req.body);
     } catch (e) {
       return res
         .status(400)
@@ -24,8 +24,8 @@ const edit_customer = async (req, res) => {
 
     res.status(200).json({
       code: 200,
-      message: "customer  edit Successfully",
-      customer: data,
+      message: "Customer Edit Successfully",
+      Student: data,
     });
   } catch (e) {
     RENDER_BAD_REQUEST(res, e);

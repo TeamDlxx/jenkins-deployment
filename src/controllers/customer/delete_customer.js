@@ -1,9 +1,9 @@
-const {detailAdmin} = require("../../services/admin");
+const {deleteCustomer} = require("../../services/customer");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
-const detail_admin = async (req, res) => {
+const delete_customer = async (req, res) => {
   try {
-    const {error, error_message, data} = await detailAdmin(req.user);
+    const {error, error_message, data} = await deleteCustomer(req.params.id);
 
     if (error) {
       return res.status(400).json({
@@ -14,12 +14,11 @@ const detail_admin = async (req, res) => {
 
     res.status(200).json({
       code: 200,
-      message: "Admin Details",
-      admin: data.admin,
+      message: "Customer Deleted Successfully!",
     });
   } catch (e) {
     RENDER_BAD_REQUEST(res, e);
   }
 };
 
-module.exports = detail_admin;
+module.exports = delete_customer;
