@@ -1,9 +1,9 @@
-const {searchCustomer} = require("../../services/customer");
+const {listCustomer} = require("../../services/customer");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
-const search_customer = async (req, res) => {
+const list_customer = async (req, res) => {
   try {
-    const {error, error_message, data} = await searchCustomer(
+    const {error, error_message, data} = await listCustomer(
       req.query.text,
       req.query.limit,
       req.query.page
@@ -26,4 +26,4 @@ const search_customer = async (req, res) => {
   }
 };
 
-module.exports = search_customer;
+module.exports = list_customer;

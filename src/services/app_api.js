@@ -29,8 +29,9 @@ const axios = require("axios");
 const fs = require("fs");
 
 const _loginUser = async (body, resp) => {
-  //
-  const user = await find_user(body);
+  // 
+  const user = await find_user(body.email);
+  console.log("Data :" ,user)
   if (!user) {
     resp.error = true;
     resp.error_message = "Invalid Email Address!";
@@ -42,14 +43,14 @@ const _loginUser = async (body, resp) => {
     return resp;
   }
 
-  const isValidPassword = await bcrypt.compare(body.password, user.password);
+  const isValidPassword = await bcrypt.compare(body.password,user.password);
   if (!isValidPassword) {
     resp.error = true;
     resp.error_message = "Invalid Email or Password";
     return resp;
   }
 
-  //generating token
+ // generating token
   const access = "auth";
   const json_token = uuidv1();
   const token = jwt

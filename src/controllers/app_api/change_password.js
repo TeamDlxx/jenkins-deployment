@@ -1,4 +1,4 @@
-const {validatePassword} = require("../../utils/validation/app_api");
+const {validate_password} = require("../../utils/validation/app_api");
 const {changePassword} = require("../../services/app_api");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
@@ -6,7 +6,7 @@ const change_password = async (req, res) => {
   try {
     //validate Request Body
     try {
-      await validatePassword(req.body);
+      await validate_password(req.body);
     } catch (e) {
       return res
         .status(400)

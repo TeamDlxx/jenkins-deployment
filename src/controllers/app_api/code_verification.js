@@ -1,4 +1,4 @@
-const {validateCode} = require("../../utils/validation/app_api");
+const {validate_code} = require("../../utils/validation/app_api");
 const {codeValidation} = require("../../services/app_api");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
 
@@ -6,7 +6,7 @@ const code_verification = async (req, res) => {
   try {
     //validate Request Body
     try {
-      await validateCode(req.body);
+      await validate_code(req.body);
     } catch (e) {
       return res
         .status(400)

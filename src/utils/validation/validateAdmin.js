@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-function validateAdmin(user) {
+function validate_admin(user) {
   const schema = {
     first_name: Joi.string()
       .regex(/^[a-z A-Z]+$/)
@@ -24,7 +24,7 @@ function validateAdmin(user) {
   return Joi.validate(user, schema);
 }
 
-function validateEditAdmin(user) {
+function validate_edit_admin(user) {
   const schema = {
     first_name: Joi.string()
       .regex(/^[a-z A-Z]+$/)
@@ -46,8 +46,8 @@ function validateEditAdmin(user) {
   return Joi.validate(user, schema);
 }
 
-// exports.validateAdmin = validateAdmin;
+// exports.validate_admin = validate_admin;
 module.exports = {
-  validateAdmin,
-  validateEditAdmin,
+  validate_admin,
+  validate_edit_admin,
 };

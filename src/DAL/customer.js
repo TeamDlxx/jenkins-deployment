@@ -1,8 +1,8 @@
 const { Customer } = require("../models/customers");
 
-const Signup_customer = async (customer_data) => {
-  const new_customer = new Customer(customer_data);
-  return await new_customer.save();
+const Signup_customer = async (customer_obj) => {
+  const customer = new Customer(customer_obj);
+  return await customer.save();
 };
 const find_customer_by_id = async (id) => {
   return await Customer.findOne({ _id: id }).populate("user_id", "email");

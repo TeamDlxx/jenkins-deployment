@@ -13,11 +13,14 @@ const customerSchema = new mongoose.Schema({
   last_name: {
     type: String,
   },
-  phone_no: {
+  profile_image: {
     type: String,
   },
-  postal_address: {
+  contact_number: {
     type: String,
+  },
+  post_code:{
+    type:String
   },
   status: {
     type: Boolean,
@@ -35,10 +38,10 @@ customerSchema.methods.toJSON = function () {
     "user_id",
     "first_name",
     "last_name",
-    "phone_no",
-    "postal_address",
+    "profile_image",
+    "contact_number",
+    "post_code",
     "status",
-    "user_type",
     "createdAt",
     "updatedAt",
   ]);

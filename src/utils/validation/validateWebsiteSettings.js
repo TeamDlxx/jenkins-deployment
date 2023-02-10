@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-function validateWebsiteSetting(user){
+function validate_website_setting(user){
   const schema = {
     support_email      : Joi.string().required().email({ minDomainAtoms: 2 }).trim(),
     privacy_policy     : Joi.string().trim().allow(null, ''),
@@ -11,5 +11,5 @@ function validateWebsiteSetting(user){
 
 
 module.exports = {
-  validateWebsiteSetting,
+  validate_website_setting,
 }

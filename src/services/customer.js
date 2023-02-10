@@ -155,7 +155,6 @@ const _getCustomers = async (Limit, page, resp) => {
   resp.data = data;
   return resp;
 };
-
 const getCustomers = async (limit, page) => {
   let resp = {
     error: false,
@@ -209,14 +208,14 @@ const detailCustomer = async (user_id) => {
 
 const _deleteCustomer = async (user_id, resp) => {
   // find by id
-  const custmer = await find_customer_by_user_id(user_id);
-  if (!custmer) {
+  const customer = await find_customer_by_user_id(user_id);
+  if (!customer) {
     resp.error = true;
     resp.error_message = "Invalid Customer ID!";
     return resp;
   }
   // customer from user model
-  const deleted_user = await delete_user_by_id(custmer.user_id._id);
+  const deleted_user = await delete_user_by_id(customer.user_id._id);
   // delete customer
   const deleted_customer = await delete_customer_by_id(user_id);
   // delete customer from session
@@ -234,13 +233,12 @@ const deleteCustomer = async (user_id) => {
   resp = await _deleteCustomer(user_id, resp);
   return resp;
 };
-
-const _searchCustomer = async (text, Limit, page, resp) => {
+//***************************************************** Search + Pagination **********************************************/
+const _listCustomer = async (text, Limit, page, resp) => {
   let limit = parseInt(Limit);
   if (!limit) {
     limit = 15;
   }
-
   if (page) {
     page = parseInt(page) + 1;
     if (isNaN(page)) {
@@ -250,31 +248,44 @@ const _searchCustomer = async (text, Limit, page, resp) => {
     page = 1;
   }
   let skip = (page - 1) * limit;
+  if(text){
+  /**********************************************************/
   const customer = await get_customer_search(text, skip, limit);
   const total_pages = await customer_search_count(text);
   resp.data = {
     customer,
     total_pages,
   };
-
   return resp;
+}
+  const customer = await pagination_customer(skip, limit);
+  // count all customer
+  const total_pages = await all_customer_count();
+  const data = {
+    customer: customer,
+    total_pages: total_pages,
+    load_more_url: `/customer/list_customer?page=${page}&limit=15`,
+  };
+  resp.data = data;
+  return resp;
+/**********************************************************/
 };
-
-const searchCustomer = async (text, limit, page) => {
+const listCustomer = async (text, limit, page) => {
   let resp = {
     error: false,
     error_message: "",
     data: {},
   };
 
-  resp = await _searchCustomer(text, limit, page, resp);
+  resp = await _listCustomer(text, limit, page, resp);
   return resp;
 };
+//************************************************************************************************************************/
 module.exports = {
   signupCustomer,
   editCustomer,
   getCustomers,
   detailCustomer,
   deleteCustomer,
-  searchCustomer,
+  listCustomer,
 };

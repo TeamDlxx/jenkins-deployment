@@ -1,5 +1,5 @@
 const {
-  validateWebsiteSetting,
+  validate_website_setting,
 } = require("../../utils/validation/validateWebsiteSettings");
 const {editWebsiteSetting} = require("../../services/website_setting");
 const {RENDER_BAD_REQUEST} = require("../../utils/utils");
@@ -8,7 +8,7 @@ const edit_website_settings = async (req, res) => {
   try {
     //validate Request Body
     try {
-      await validateWebsiteSetting(req.body);
+      await validate_website_setting(req.body);
     } catch (e) {
       return res
         .status(400)

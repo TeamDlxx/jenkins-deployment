@@ -5,7 +5,7 @@ const edit_customer = require("../../../controllers/customer/edit_customer");
 const get_customers = require("../../../controllers/customer/get_customer");
 const detail_customer = require("../../../controllers/customer/detail_customer");
 const delete_customer = require("../../../controllers/customer/delete_customer");
-const search_customer = require("../../../controllers/customer/search_customer");
+const list_customer = require("../../../controllers/customer/list_customer");
 register_route({
   router,
   route: "/signup_customer",
@@ -44,10 +44,10 @@ register_route({
 });
 register_route({
   router,
-  route: "/search_customer",
+  route: "/list_customer",
   auth_enable: true,
   admin_auth_enable: true,
-  get_method: search_customer,
+  get_method: list_customer,
 });
 
 module.exports = router;
