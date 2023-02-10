@@ -1,6 +1,4 @@
-const {validate_email} = require("../../utils/validation/app_api");
-const {changeEmail} = require("../../services/app_api");
-const {RENDER_BAD_REQUEST} = require("../../utils/utils")
+const { validate_email } = require("../../utils/validation/app_api");
 const { changeEmail } = require("../../services/app_api");
 const { RENDER_BAD_REQUEST } = require("../../utils/utils");
 const change_email = async (req, res) => {

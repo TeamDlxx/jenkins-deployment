@@ -1,6 +1,4 @@
-const {validate_user} = require("../../utils/validation/app_api");
-const {loginUser} = require("../../services/app_api");
-const {RENDER_BAD_REQUEST} = require("../../utils/utils");
+const { validate_user } = require("../../utils/validation/app_api");
 const { loginUser } = require("../../services/app_api");
 const { RENDER_BAD_REQUEST } = require("../../utils/utils");
 const login = async (req, res) => {

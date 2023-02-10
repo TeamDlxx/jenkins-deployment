@@ -35,14 +35,7 @@ const _loginUser = async (body, resp) => {
     return resp;
   }
 
-<<<<<<< HEAD
   const isValidPassword = await bcrypt.compare(body.password, user.password);
-=======
-  // const isValidPassword = await bcrypt.compare(body.password, user.password);
-
-  const isValidPassword = await user.comparePassword(body.password);
-
->>>>>>> 7242729eafb334c5d862c1a9c6e6d046ff777302
   if (!isValidPassword) {
     resp.error = true;
     resp.error_message = "Invalid Email or Password";
@@ -74,7 +67,7 @@ const _loginUser = async (body, resp) => {
 
   return resp;
 };
-const loginUser = async (body) => {
+const loginUser = async body => {
   let resp = {
     error: false,
     error_message: "",
@@ -130,8 +123,7 @@ const _changeEmail = async (body, user_id, resp) => {
     return resp;
   }
   if (body.email !== user.email) {
-
-    let check_user_email = await find_user(body,user_id);
+    let check_user_email = await find_user(body, user_id);
     if (check_user_email) {
       resp.error = true;
       resp.error_message = "User With This Email Already Exist";
@@ -169,7 +161,7 @@ const _logoutUser = async (user_id, resp) => {
   }
   return resp;
 };
-const logoutUser = async (user_id) => {
+const logoutUser = async user_id => {
   let resp = {
     error: false,
     error_message: "",
@@ -198,7 +190,7 @@ const _emailVerification = async (body, resp) => {
   await NOTIFY_BY_EMAIL_FROM_SES(user.email, subject, email_body);
   return resp;
 };
-const emailVerification = async (body) => {
+const emailVerification = async body => {
   let resp = {
     error: false,
     error_message: "",
@@ -228,7 +220,7 @@ const _codeVerification = async (body, resp) => {
     return resp;
   }
 };
-const codeVerification = async (body) => {
+const codeVerification = async body => {
   let resp = {
     error: false,
     error_message: "",
@@ -264,7 +256,7 @@ const _resetPassword = async (body, resp) => {
   await user.save();
   return resp;
 };
-const resetPassword = async (body) => {
+const resetPassword = async body => {
   let resp = {
     error: false,
     error_message: "",
@@ -306,7 +298,7 @@ const _uplaodImageS3 = async (files, resp) => {
   };
   return resp;
 };
-const uplaodImageS3 = async (files) => {
+const uplaodImageS3 = async files => {
   let resp = {
     error: false,
     error_message: "",
@@ -348,7 +340,7 @@ const _uplaodImage = async (files, resp) => {
   };
   return resp;
 };
-const uplaodImage = async (files) => {
+const uplaodImage = async files => {
   let resp = {
     error: false,
     error_message: "",
@@ -377,7 +369,7 @@ const _uplaodAudio = async (files, resp) => {
   }
   // calculate duration of audio file
   await getAudioDurationInSeconds("./src/utils/audio/" + response).then(
-    (duration_in_sec) => {
+    duration_in_sec => {
       let duration_in_hours = Math.floor(duration_in_sec / 3600); // get hours
       let duration_in_minutes = Math.floor(
         (duration_in_sec - duration_in_hours * 3600) / 60
@@ -403,7 +395,7 @@ const _uplaodAudio = async (files, resp) => {
   resp.data = { path: response };
   return resp;
 };
-const uplaodAudio = async (files) => {
+const uplaodAudio = async files => {
   let resp = {
     error: false,
     error_message: "",

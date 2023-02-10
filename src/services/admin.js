@@ -1,6 +1,3 @@
-
-const {signup_admin, detail_admin} = require("../DAL/admin");
-const {signup_user, checking_email_exist} = require("../DAL/user");
 //******************************************************** Admin Signup *****************************************************/
 const { signup_admin, detail_admin } = require("../DAL/admin");
 const { signup_user, checking_email_exist } = require("../DAL/user");
@@ -27,7 +24,7 @@ const _signupAdmin = async (body, resp) => {
 
   return resp;
 };
-const signupAdmin = async (body) => {
+const signupAdmin = async body => {
   let resp = {
     error: false,
     error_message: "",
@@ -87,7 +84,7 @@ const _detailAdmin = async (user_id, resp) => {
 
   return resp;
 };
-const detailAdmin = async (user_id) => {
+const detailAdmin = async user_id => {
   let resp = {
     error: false,
     error_message: "",
