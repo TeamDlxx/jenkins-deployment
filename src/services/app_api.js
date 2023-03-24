@@ -138,7 +138,7 @@ const _changeEmail = async (body, user_id, resp) => {
   }
 
   if (body.email !== user.email) {
-    let check_user_email = await find_user(body);
+    let check_user_email = await find_user(body.email);
     if (check_user_email) {
       resp.error = true;
       resp.error_message = "User With This Email Already Exist";
