@@ -25,7 +25,7 @@ const {v1: uuidv1} = require("uuid");
 const {v1: uuidv4} = require("uuid");
 //******************************************** Sign Up Customer********************************************************/
 const _signupCustomer = async (body, resp) => {
-  const user = await find_user(body);
+  const user = await find_user(body.email);
   if (user) {
     resp.error = true;
     resp.error_message = "Email Alreay axist";
