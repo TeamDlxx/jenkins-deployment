@@ -247,28 +247,25 @@ const _listCustomer = async (text, Limit, page, resp) => {
   } else {
     page = 1;
   }
+  let customers = [];
+  let total_customers = 0;
   let skip = (page - 1) * limit;
-  if(text){
-  /**********************************************************/
-  const customer = await get_customer_search(text, skip, limit);
-  const total_pages = await customer_search_count(text);
+  let url = "";
+  if (text) {
+    url = `/customer/list_customer?text=${text}&page=${page}&limit=${limit}`;
+    customers = await get_customer_search(text, skip, limit);
+    total_customers = await customer_search_count(text);
+  } else {
+    url = `/customer/list_customer?page=${page}&limit=${limit}`;
+    customers = await pagination_customer(skip, limit);
+    total_customers = await all_customer_count();
+  }
   resp.data = {
-    customer,
-    total_pages,
+    customer_list: customers,
+    count: total_customers,
+    load_more_url: url,
   };
   return resp;
-}
-  const customer = await pagination_customer(skip, limit);
-  // count all customer
-  const total_pages = await all_customer_count();
-  const data = {
-    customer: customer,
-    total_pages: total_pages,
-    load_more_url: `/customer/list_customer?page=${page}&limit=15`,
-  };
-  resp.data = data;
-  return resp;
-/**********************************************************/
 };
 const listCustomer = async (text, limit, page) => {
   let resp = {

@@ -19,7 +19,7 @@ const list_customer = async (req, res) => {
     res.status(200).json({
       code: 200,
       message: "Customers",
-      data: data,
+      customers: data,
     });
   } catch (e) {
     RENDER_BAD_REQUEST(res, e);
