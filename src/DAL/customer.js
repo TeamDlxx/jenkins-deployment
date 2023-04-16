@@ -31,7 +31,7 @@ const all_customer_count = async () => {
 };
 
 const delete_customer_by_id = async (customer_id) => {
-  return await Customer.findByIdAndDelete(customer_id);
+  return await Customer.deleteOne({user_id:customer_id});
 };
 const get_customer_search = async (text, skip, limit) => {
   return await Customer.find({

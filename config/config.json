@@ -2,7 +2,7 @@
   "local": {
     "PORT": 1200,
     "IP": "192.168.1.23",
-    "MONGODB_URI": "mongodb://localhost:27017/backend-template",
+    "MONGODB_URI": "mongodb://127.0.0.1:27017/backend-template",
     "JWT_SECRET": "3ZGErMDCyxTOZYFr56HGD",
     "NODE_ENV": "local"
   },
