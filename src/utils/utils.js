@@ -1,12 +1,11 @@
 const sharp = require("sharp");
 const s3 = require("../../config/S3_config/s3.config");
 let upload = require("../../config/S3_config/multer.config");
-const {TYPE_IMAGE, TYPE_AUDIO} = require("../utils/constants");
 const {v1: uuidv4} = require("uuid");
 const fs = require("fs-extra");
 const path = require("path");
 const AWS = require("aws-sdk");
-
+//*******************************{RENDER BAD REQUEST}*******************************
 const RENDER_BAD_REQUEST = (res, error) => {
   console.log(error);
   if (error.message) {
@@ -17,7 +16,7 @@ const RENDER_BAD_REQUEST = (res, error) => {
     res.status(400).send(error);
   }
 };
-// change order in delete case
+//*******************************{change order in delete case}*******************************
 const CHANGE_DEL_ORDER = async (current_order, schema) => {
   let doc = await schema.find({
     order: {
@@ -30,8 +29,7 @@ const CHANGE_DEL_ORDER = async (current_order, schema) => {
   });
   await Promise.all(promise);
 };
-
-//ORDER_CHANGE_TO_LOWER
+//*******************************{ORDER_CHANGE_TO_LOWER}*******************************
 const ORDER_CHANGE_TO_LOWER = async (current_order, past_order, schema) => {
   let doc = await schema.find({
     order: {
@@ -46,8 +44,7 @@ const ORDER_CHANGE_TO_LOWER = async (current_order, past_order, schema) => {
   });
   await Promise.all(promise);
 };
-
-//_ORDER_CHANGE_TO_UPPER
+//*******************************{_ORDER_CHANGE_TO_UPPER}*******************************
 const ORDER_CHANGE_TO_UPPER = async (current_order, past_order, schema) => {
   let doc = await schema.find({
     order: {
@@ -62,7 +59,21 @@ const ORDER_CHANGE_TO_UPPER = async (current_order, past_order, schema) => {
   });
   await Promise.all(promise);
 };
-
+//*******************************{MAX_ORDER}*******************************
+const MAX_ORDER = async (modelName, query_obj = {}) => {
+  let max_order = 0;
+  let x;
+  x = await modelName
+    .findOne(query_obj)
+    .sort({ order: -1 })
+    .limit(1)
+    .select({ order: 1, _id: 0 });
+  if (x) {
+    max_order = x.order;
+  }
+  return max_order;
+};
+//*******************************{SEND_EMAIL}*******************************
 const SEND_EMAIL = async (code, receiver) => {
   require("dotenv").config();
   const sg_mail = require("@sendgrid/mail");
@@ -87,7 +98,7 @@ const SEND_EMAIL = async (code, receiver) => {
     });
   return result;
 };
-///////////Upload File
+//*******************************{  UPLOAD AUDIO FILE}*******************************
 const UPLOAD_AUDIO_FILE = async (files, resp) => {
   const myPromise = new Promise(async (resolve, reject) => {
     try {
@@ -116,7 +127,7 @@ const UPLOAD_AUDIO_FILE = async (files, resp) => {
 
   return myPromise;
 };
-
+//*******************************{UPLOAD AND RESIZE FILE}*******************************
 const UPLOAD_AND_RESIZE_FILE = async (image_buffer_data, dir, image_size) => {
   const myPromise = new Promise(async (resolve, reject) => {
     try {
@@ -139,7 +150,7 @@ const UPLOAD_AND_RESIZE_FILE = async (image_buffer_data, dir, image_size) => {
 
   return myPromise;
 };
-
+//*******************************{UPLOAD IMAGE ON S3}*******************************
 const UPLOAD_S3_IMAGE = async (img_name, dir, image_data) => {
   let response = {};
   let image_file_name = "";
@@ -169,6 +180,7 @@ const UPLOAD_S3_IMAGE = async (img_name, dir, image_data) => {
 
   return response;
 };
+//*******************************{SEND NOTIFICATION}*******************************
 const SEND_NOTIFICATION = async (message) => {
   // Send a message to devices subscribed to the provided topic.
   return admin
@@ -182,8 +194,7 @@ const SEND_NOTIFICATION = async (message) => {
       console.log("Error sending message:", error);
     });
 };
-
-//  AWS SES Email
+//*******************************{AWS SES Email}*******************************
 const NOTIFY_BY_EMAIL_FROM_SES = async (
   email,
   subject,
@@ -219,29 +230,16 @@ const NOTIFY_BY_EMAIL_FROM_SES = async (
   };
   return AWS_SES.sendEmail(params).promise(); // or something
 };
-const MAX_ORDER = async (modelName, query_obj = {}) => {
-  let max_order = 0;
-  let x;
-  x = await modelName
-    .findOne(query_obj)
-    .sort({ order: -1 })
-    .limit(1)
-    .select({ order: 1, _id: 0 });
-  if (x) {
-    max_order = x.order;
-  }
-  return max_order;
-};
 module.exports = {
   RENDER_BAD_REQUEST,
   CHANGE_DEL_ORDER,
   ORDER_CHANGE_TO_LOWER,
   ORDER_CHANGE_TO_UPPER,
+  MAX_ORDER,
   SEND_EMAIL,
   UPLOAD_AND_RESIZE_FILE,
   UPLOAD_AUDIO_FILE,
   UPLOAD_S3_IMAGE,
   SEND_NOTIFICATION,
   NOTIFY_BY_EMAIL_FROM_SES,
-  MAX_ORDER
 };

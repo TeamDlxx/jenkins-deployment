@@ -5,7 +5,7 @@ const _ = require("lodash");
 const customerSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "user",
   },
   first_name: {
     type: String,

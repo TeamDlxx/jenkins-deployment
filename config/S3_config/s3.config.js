@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const env = require("./s3.env.js");
+const env = process.env;
 
 const s3Client = new AWS.S3({
   accessKeyId: env.AWS_ACCESS_KEY,
@@ -8,7 +8,7 @@ const s3Client = new AWS.S3({
 });
 
 const uploadParams = {
-  Bucket: env.Bucket,
+  Bucket: env.BUCKET,
   Key: "", // pass key
   Body: null, // pass file body
   ContentType: "",

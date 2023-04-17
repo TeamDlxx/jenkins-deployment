@@ -5,7 +5,7 @@ const _ = require("lodash");
 const adminUserSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "user",
     trim: true,
   },
   first_name: {

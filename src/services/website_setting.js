@@ -2,8 +2,7 @@ const {
   add_website_setting,
   get_website_setting,
 } = require("../DAL/website_setting");
-
-// Edit Website Settings
+//*************************************{Edit Website Settings}************************************************
 const _editWebsiteSetting = async (body, resp) => {
   const website_setting = await get_website_setting();
 
@@ -26,7 +25,6 @@ const _editWebsiteSetting = async (body, resp) => {
 
   return resp;
 };
-
 const editWebsiteSetting = async (body) => {
   let resp = {
     error: false,
@@ -38,8 +36,7 @@ const editWebsiteSetting = async (body) => {
   resp = await _editWebsiteSetting(body, resp);
   return resp;
 };
-
-// Get Website Settings
+//*************************************{Get Website Settings}************************************************
 const _getWebsiteSetting = async (resp) => {
   const website_setting = await get_website_setting();
 
@@ -48,7 +45,6 @@ const _getWebsiteSetting = async (resp) => {
   };
   return resp;
 };
-
 const getWebsiteSetting = async () => {
   let resp = {
     error: false,
@@ -59,7 +55,6 @@ const getWebsiteSetting = async () => {
   resp = await _getWebsiteSetting(resp);
   return resp;
 };
-
 module.exports = {
   editWebsiteSetting,
   getWebsiteSetting,

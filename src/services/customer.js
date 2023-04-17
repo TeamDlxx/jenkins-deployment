@@ -6,7 +6,6 @@ const {
 } = require("../DAL/user");
 const {
   Signup_customer,
-  find_customer_by_id,
   pagination_customer,
   all_customer_count,
   delete_customer_by_id,
@@ -19,11 +18,8 @@ const {
   delete_from_session_by_user_id,
 } = require("../DAL/session");
 const jwt = require("jsonwebtoken");
-const {UPLOAD_IMAGE} = require("../utils/utils");
-const {SERVICE_ICON_SIZE} = require("../utils/constants");
 const {v1: uuidv1} = require("uuid");
-const {v1: uuidv4} = require("uuid");
-//******************************************** Sign Up Customer********************************************************/
+//********************************************{Sign Up Customer}********************************************************/
 const _signupCustomer = async (body, resp) => {
   const user = await find_user(body.email);
   if (user) {
@@ -81,7 +77,7 @@ const signupCustomer = async (body) => {
   resp = await _signupCustomer(body, resp);
   return resp;
 };
-//***************************************************** Edit Customer ******************************************************/
+//*****************************************************{Edit Customer} ******************************************************/
 const _editCustomer = async (body, user_id, resp) => {
   const user = await find_user_by_id(user_id);
   if (!user) {
@@ -127,7 +123,7 @@ const editCustomer = async (body, user_id) => {
   resp = await _editCustomer(body, user_id, resp);
   return resp;
 };
-
+//********************************************{Get Customer}********************************************************/
 const _getCustomers = async (Limit, page, resp) => {
   ///// pagination
   let limit = parseInt(Limit);
@@ -166,6 +162,7 @@ const getCustomers = async (limit, page) => {
   resp = await _getCustomers(limit, page, resp);
   return resp;
 };
+//********************************************{Detail Customer}********************************************************/
 const _detailCustomer = async (user_id, resp) => {
   const user = await find_user_by_id(user_id);
   if (!user) {
@@ -194,7 +191,6 @@ const _detailCustomer = async (user_id, resp) => {
   resp.data = customer;
   return resp;
 };
-
 const detailCustomer = async (user_id) => {
   let resp = {
     error: false,
@@ -205,7 +201,7 @@ const detailCustomer = async (user_id) => {
   resp = await _detailCustomer(user_id, resp);
   return resp;
 };
-
+//********************************************{Delete Customer}********************************************************/
 const _deleteCustomer = async (user_id, resp) => {
   // find by id
   const customer = await find_customer_by_user_id(user_id);
@@ -222,7 +218,6 @@ const _deleteCustomer = async (user_id, resp) => {
   const delete_customer_session = await delete_from_session_by_user_id(user_id);
   return resp;
 };
-
 const deleteCustomer = async (user_id) => {
   let resp = {
     error: false,
@@ -233,7 +228,7 @@ const deleteCustomer = async (user_id) => {
   resp = await _deleteCustomer(user_id, resp);
   return resp;
 };
-//***************************************************** Search + Pagination **********************************************/
+//*****************************************************{List Customer with Search + Pagination} **********************************************/
 const _listCustomer = async (text, Limit, page, resp) => {
   let limit = parseInt(Limit);
   if (!limit) {
@@ -277,7 +272,6 @@ const listCustomer = async (text, limit, page) => {
   resp = await _listCustomer(text, limit, page, resp);
   return resp;
 };
-//************************************************************************************************************************/
 module.exports = {
   signupCustomer,
   editCustomer,
