@@ -1,11 +1,11 @@
 {
-  "name": "we-fix-backend",
+  "name": "template-backend",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=dev forever start ./bin/www.backend.template-dlx",
-    "prod": "NODE_ENV=prod forever start ./bin/www.backend.template-dlx",
-    "start": "node ./bin/www.backend.template-dlx",
+    "dev": "NODE_ENV=dev forever start ./bin/www.backend.template",
+    "prod": "NODE_ENV=prod forever start ./bin/www.backend.template",
+    "start": "node ./bin/www.backend.template",
     "local": "nodemon",
     "clean": "rm -rf node_modules/"
   },
@@ -32,7 +32,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "moment": "^2.27.0",
-    "mongoose": "^5.13.15",
+    "mongoose": "^5.10.7",
     "mongoose-timestamp": "^0.6.0",
     "moongoose": "0.0.5",
     "morgan": "^1.10.0",
@@ -50,17 +50,5 @@
   "devDependencies": {
     "nodemon": "^2.0.4",
     "sequelize-automate": "^1.2.2"
-  },
-  "main": "app.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/teamdlxx/dlx-node-api-backend.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/teamdlxx/dlx-node-api-backend/issues"
-  },
-  "homepage": "https://github.com/teamdlxx/dlx-node-api-backend#readme",
-  "description": ""
+  }
 }

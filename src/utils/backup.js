@@ -3,7 +3,7 @@ const fs = require("fs");
 const _ = require("lodash");
 const path = require("path");
 
-const DB_NAME = "we-fix-app";
+const DB_NAME = "template-app";
 const ARCHIVE_PATH = path.join(__dirname, "../../", `${DB_NAME}.gzip`);
 const do_backup = async () => {
   console.log(ARCHIVE_PATH, "path");
