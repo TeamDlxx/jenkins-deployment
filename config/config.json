@@ -1,0 +1,51 @@
+{
+  "local": {
+    "PORT": 4615,
+    "IP": "192.168.100.37",
+    "MONGODB_URI": "mongodb://127.0.0.1:27017/jenkins",
+    "JWT_SECRET": "3ZGErMDCyxTOZYFr56HGD",
+    "secret_auth_key": "1i8wds6dbdnyd6e&bgebebbe",
+    "BASE_UPLOAD_DIR": "E:/node/jenkins-app-backend/",
+    "NODE_ENV": "local",
+    "API_KEY": "jenkins@3ZGErMDCyxTOZYFr56HGD",
+    "AWS_BUCKET": "jenkins-app-bucket",
+    "STRIPE_SECRET_kEY": "sk_test_51HgkSSC7YQlXMPdDDJnOuqqHJzStbR2liGaVBsgQBy2ix0U8c8WJJM2vm9psPRa03n2fneZmZm5gyVATksoAOWhn00qy2XKOiW",
+    "EMAIL_FROM": "mohsinali08585@gmail.com",
+    "sendgrid_key": "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",
+    "S3_BASE_URL": "https://jenkins-app-bucket.s3.amazonaws.com/",
+     "STRIPE_MODE": "sandBox"
+  },
+  "dev": {
+    "PORT": 4615,
+    "IP": "192.168.100.37",
+    "MONGODB_URI": "mongodb://127.0.0.1:27017/jenkins",
+    "JWT_SECRET": "3ZGErMDCyxTOZYFr56HGD",
+    "secret_auth_key": "1i8wds6dbdnyd6e&bgebebbe",
+    "BASE_UPLOAD_DIR": "E:/node/jenkins-app-backend/",
+    "NODE_ENV": "local",
+    "API_KEY": "jenkins@3ZGErMDCyxTOZYFr56HGD",
+    "AWS_BUCKET": "jenkins-app-bucket",
+    "STRIPE_SECRET_kEY": "sk_test_51HgkSSC7YQlXMPdDDJnOuqqHJzStbR2liGaVBsgQBy2ix0U8c8WJJM2vm9psPRa03n2fneZmZm5gyVATksoAOWhn00qy2XKOiW",
+    "EMAIL_FROM": "mohsinali08585@gmail.com",
+    "sendgrid_key": "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",
+    "S3_BASE_URL": "https://jenkins-app-bucket.s3.amazonaws.com/",
+     "STRIPE_MODE": "sandBox"
+  }, 
+  "prod": {
+    "PORT": 4615,
+    "IP": "192.168.100.37",
+    "MONGODB_URI": "mongodb://127.0.0.1:27017/jenkins",
+    "JWT_SECRET": "3ZGErMDCyxTOZYFr56HGD",
+    "secret_auth_key": "1i8wds6dbdnyd6e&bgebebbe",
+    "BASE_UPLOAD_DIR": "E:/node/jenkins-app-backend/",
+    "NODE_ENV": "local",
+    "API_KEY": "jenkins@3ZGErMDCyxTOZYFr56HGD",
+    "AWS_BUCKET": "jenkins-app-bucket",
+    "STRIPE_SECRET_kEY": "sk_test_51HgkSSC7YQlXMPdDDJnOuqqHJzStbR2liGaVBsgQBy2ix0U8c8WJJM2vm9psPRa03n2fneZmZm5gyVATksoAOWhn00qy2XKOiW",
+    "EMAIL_FROM": "mohsinali08585@gmail.com",
+    "sendgrid_key": "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",
+    "S3_BASE_URL": "https://jenkins-app-bucket.s3.amazonaws.com/",
+     "STRIPE_MODE": "sandBox"
+  }
+}
+ 
