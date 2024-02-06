@@ -16,7 +16,7 @@
      "STRIPE_MODE": "sandBox"
   },
   "dev": {
-    "PORT": 4615,
+    "PORT": 4616,
     "IP": "192.168.100.37",
     "MONGODB_URI": "mongodb://127.0.0.1:27017/jenkins",
     "JWT_SECRET": "3ZGErMDCyxTOZYFr56HGD",
