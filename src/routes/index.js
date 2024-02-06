@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.render("index", {title: "Backend Template testing| API Services"});
+  res.render("index", {title: "Backend Template testing1122| API Services"});
 });
 
 module.exports = router;
