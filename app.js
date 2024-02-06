@@ -1,5 +1,5 @@
 require("./config/config");
-require("./src/databases/mongoose");
+// require("./src/databases/mongoose");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
